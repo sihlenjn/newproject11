@@ -18,6 +18,6 @@
     "href": "multiplication.html",
     "title": "Multiplying numbers in R",
     "section": "",
-    "text": "To multiply numbers in R use *\n\n2 * 3\n\n[1] 6"
+    "text": "To multiply numbers in R use *\n\nlibrary(moments)\n\nx_kurtosis = c()\nfor (i in 1:100) {\n  x_norm = rnorm(1000)\n  x_kurtosis[i] = kurtosis(x_norm)\n  \n}\n\nplot(x_kurtosis,type=\"o\",ylab = \"Kurtosis\",pch=16)\nabline(h=3,col=\"red\",lwd=2)\n\n\n\n\nKurtosis of a standard Normal distribution"
   }
 ]

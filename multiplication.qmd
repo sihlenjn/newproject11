@@ -8,7 +8,7 @@ To multiply numbers in R use `*`
 library(moments)
 
 x_kurtosis = c()
-for (i in 1:50) {
+for (i in 1:100) {
   x_norm = rnorm(1000)
   x_kurtosis[i] = kurtosis(x_norm)
   
