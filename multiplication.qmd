@@ -4,9 +4,19 @@ title: "Multiplying numbers in R"
 
 To multiply numbers in R use `*`
 
-```{r}
-x = 2
-y = 6
-z = x^2 * y^2
-z
+```{r,fig.cap="Kurtosis of a standard Normal distribution"}
+library(moments)
+
+
+
+x_kurtosis = c()
+for (i in 1:100) {
+  x_norm = rnorm(1000)
+  x_kurtosis[i] = kurtosis(x_norm)
+  
+}
+
+plot(x_kurtosis,type="o",ylab = "Kurtosis",pch=16)
+abline(h=3,col="red",lwd=2)
+
 ```
