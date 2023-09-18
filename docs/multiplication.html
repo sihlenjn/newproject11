@@ -122,6 +122,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -187,19 +188,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>To multiply numbers in R use <code>*</code></p>
-<div class="cell">
+<p>The kurtosis of a Normal distribution, say <span class="math inline">\(X\)</span>, is 3. This is given by <span class="math display">\[COK = \frac{\mu_4}{\sigma_X^4}= \frac{\mu_4}{(Var(X))^2}\]</span> with <span class="math inline">\(\mu_4=\mu'_4-4\mu_3'\mu_X+6\mu_2'(\mu_X)^2-3(\mu_X)^4\)</span> and <span class="math inline">\(Var(X)=E[X^2]-(E[X])^2\)</span>.</p>
+<p>The package <code>moments</code> in <code>R</code> can be used to calculate the kurtosis of a Normal distribution. If this is done multiple times on a different data set generated from a Normal distribution with mean <span class="math inline">\(\mu_X\)</span> and variance <span class="math inline">\(\sigma_X^2\)</span>, one can see that it converges to 3. Below a function named <code>kurt_norm</code> is created to implement this. The kurtosis at each iteration are shown in Figure 1.</p>
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x_kurtosis <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) {</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  x_norm <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  x_kurtosis[i] <span class="ot">=</span> <span class="fu">kurtosis</span>(x_norm)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x_kurtosis,<span class="at">type=</span><span class="st">"o"</span>,<span class="at">ylab =</span> <span class="st">"Kurtosis"</span>,<span class="at">pch=</span><span class="dv">16</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">3</span>,<span class="at">col=</span><span class="st">"red"</span>,<span class="at">lwd=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>kurt_norm <span class="ot">=</span> <span class="cf">function</span>(<span class="at">N =</span> <span class="dv">100</span>,<span class="at">n =</span> <span class="dv">1000</span>,<span class="at">mu =</span> <span class="dv">0</span>,<span class="at">sigma =</span> <span class="dv">1</span>){</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># N     : number of iterations</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n     : sample size for the generated random values from N(mu,sigma)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mu    : mean of the normal distribution</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sigma : variance of the normal distribution</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  x_kurtosis <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    x_norm <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    x_kurtosis[i] <span class="ot">=</span> <span class="fu">kurtosis</span>(x_norm)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x_kurtosis)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">kurt_norm</span>(<span class="at">N =</span> <span class="dv">100</span>,<span class="at">n =</span> <span class="dv">1000</span>,<span class="at">mu =</span> <span class="dv">0</span>,<span class="at">sigma =</span> <span class="dv">1</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res,<span class="at">type =</span> <span class="st">"o"</span>,<span class="at">ylab =</span> <span class="st">"Kurtosis"</span>,<span class="at">pch =</span> <span class="dv">16</span>,<span class="at">xlab =</span> <span class="st">"Iteration"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">3</span>,<span class="at">col =</span> <span class="st">"red"</span>,<span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
