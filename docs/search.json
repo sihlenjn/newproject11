@@ -16,7 +16,7 @@
   {
     "objectID": "multiplication.html",
     "href": "multiplication.html",
-    "title": "Multiplying numbers in R",
+    "title": "Kurtosis of a Normal distribution",
     "section": "",
     "text": "The kurtosis of a Normal distribution, say \\(X\\), is 3. This is given by \\[COK = \\frac{\\mu_4}{\\sigma_X^4}= \\frac{\\mu_4}{(Var(X))^2}\\] with \\(\\mu_4=\\mu'_4-4\\mu_3'\\mu_X+6\\mu_2'(\\mu_X)^2-3(\\mu_X)^4\\) and \\(Var(X)=E[X^2]-(E[X])^2\\).\nThe package moments in R can be used to calculate the kurtosis of a Normal distribution. If this is done multiple times on a different data set generated from a Normal distribution with mean \\(\\mu_X\\) and variance \\(\\sigma_X^2\\), one can see that it converges to 3. Below a function named kurt_norm is created to implement this. The kurtosis at each iteration are shown in Figure 1.\n\nlibrary(moments)\n\nkurt_norm = function(N = 100,n = 1000,mu = 0,sigma = 1){\n  # N     : number of iterations\n  # n     : sample size for the generated random values from N(mu,sigma)\n  # mu    : mean of the normal distribution\n  # sigma : variance of the normal distribution\n  x_kurtosis = c()\n  for (i in 1:N) {\n    x_norm = rnorm(n)\n    x_kurtosis[i] = kurtosis(x_norm)\n  }\n  return(x_kurtosis)\n}\nres = kurt_norm(N = 100,n = 1000,mu = 0,sigma = 1)\nplot(res,type = \"o\",ylab = \"Kurtosis\",pch = 16,xlab = \"Iteration\")\nabline(h = 3,col = \"red\",lwd = 2)\n\n\n\n\nKurtosis of a Normal distribution"
   }
