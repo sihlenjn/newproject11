@@ -4,7 +4,7 @@ author: "Sihle Njonga"
 toc: true
 number-sections: false
 format:
-  pdf: 
+  html: 
     code-fold: true
     html-math-method: katex
 ---

@@ -4,7 +4,7 @@ project:
 
 website:
   title: "A Quarto Website"
-  reader-mode: true
+  reader-mode: false
   navbar:
     left:
       - href: index.qmd
