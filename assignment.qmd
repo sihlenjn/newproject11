@@ -2,12 +2,14 @@
 title: "Data Science for Industry - Assignment 2"
 author: "Sihle Njonga"
 toc: true
-number-sections: false
+number-sections: true
 format:
   html: 
     code-fold: true
     html-math-method: katex
 ---
+
+\newpage
 
 # Abstract
 
