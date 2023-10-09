@@ -12,30 +12,3 @@ format:
 # Abstract
 
 # Introduction
-
-# Literature Review
-
-The kurtosis of a Normal distribution, say $X$, is 3. This is given by $$COK = \frac{\mu_4}{\sigma_X^4}= \frac{\mu_4}{(Var(X))^2}$$ with $\mu_4=\mu'_4-4\mu_3'\mu_X+6\mu_2'(\mu_X)^2-3(\mu_X)^4$ and $Var(X)=E[X^2]-(E[X])^2$.
-
-The package `moments` in `R` can be used to calculate the kurtosis of a Normal distribution. If this is done multiple times on a different data set generated from a Normal distribution with mean $\mu_X$ and variance $\sigma_X^2$, one can see that it converges to 3. Below a function named `kurt_norm` is created to implement this. The kurtosis at each iteration are shown in Figure 1.
-
-```{r,fig.cap="Kurtosis of a Normal distribution",fig.align='center'}
-library(moments)
-
-kurt_norm = function(N = 100,n = 1000,mu = 0,sigma = 1){
-  # N     : number of iterations
-  # n     : sample size for the generated random values from N(mu,sigma)
-  # mu    : mean of the normal distribution
-  # sigma : variance of the normal distribution
-  x_kurtosis = c()
-  for (i in 1:N) {
-    x_norm = rnorm(n)
-    x_kurtosis[i] = kurtosis(x_norm)
-  }
-  return(x_kurtosis)
-}
-res = kurt_norm(N = 100,n = 1000,mu = 0,sigma = 1)
-plot(res,type = "o",ylab = "Kurtosis",pch = 16,xlab = "Iteration")
-abline(h = 3,col = "red",lwd = 2)
-
-```
