@@ -9,7 +9,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - multiplication.qmd
+      - href: assignment.qmd
+        text: Data Science for Industry - Assignment
 
 format:
   html:
