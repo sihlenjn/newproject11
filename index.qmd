@@ -1,7 +1,21 @@
 ---
-title: "Welcome!"
+title: "Welcome page!"
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
-This is a Quarto website.
+This Website contains a paper written for a course on Data Science for
+Industry, the paper is include in the Page named "Main Assignment". The
+main objective of the project is to fit at least three predictive models
+that take a sentence of text as input and return a prediction of which
+president was the source of that sentence. The following models are
+compared:
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+-   neural networks
+
+-   decision trees
+
+-   random forests
+
+The stru

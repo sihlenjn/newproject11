@@ -9,9 +9,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Welcome!",
+    "title": "Welcome page!",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "This Website contains a paper written for a course on Data Science for Industry, the paper is include in the Page named “Main Assignment”. The main objective of the project is to fit at least three predictive models that take a sentence of text as input and return a prediction of which president was the source of that sentence. The following models are compared:\n\nneural networks\ndecision trees\nrandom forests\n\nThe stru"
   },
   {
     "objectID": "multiplication.html",
@@ -30,8 +30,43 @@
   {
     "objectID": "assignment.html#data",
     "href": "assignment.html#data",
-    "title": "Data Science for Industry - Assignment 2",
-    "section": "3.1 Data",
-    "text": "3.1 Data"
+    "title": "Data Science for Industry Assignment 2",
+    "section": "Data",
+    "text": "Data"
+  },
+  {
+    "objectID": "assignment.html",
+    "href": "assignment.html",
+    "title": "Data Science for Industry Assignment 2",
+    "section": "",
+    "text": "# Install all the required packages\nlibrary(kableExtra)"
+  },
+  {
+    "objectID": "assignment.html#data-pre-processing",
+    "href": "assignment.html#data-pre-processing",
+    "title": "Data Science for Industry Assignment 2",
+    "section": "Data Pre processing",
+    "text": "Data Pre processing\nThe data set is loaded in R"
+  },
+  {
+    "objectID": "assignment.html#exploratory-data-analysis",
+    "href": "assignment.html#exploratory-data-analysis",
+    "title": "Data Science for Industry Assignment 2",
+    "section": "Exploratory Data Analysis",
+    "text": "Exploratory Data Analysis\nIn this study , the SONA data set will be used. This dataset contains all the speeches of the previous presidents from 1994 to 2023 which is in the form of text file. Pre processing of the data set is conducted so that we’re able to transform the dataset into the required form. The steps taken to clean and transform the data are indicated below."
+  },
+  {
+    "objectID": "assignment.html#fitted-predictive-models",
+    "href": "assignment.html#fitted-predictive-models",
+    "title": "Data Science for Industry Assignment 2",
+    "section": "Fitted predictive models",
+    "text": "Fitted predictive models"
+  },
+  {
+    "objectID": "assignment.html#predictive-models",
+    "href": "assignment.html#predictive-models",
+    "title": "Data Science for Industry Assignment 2",
+    "section": "Predictive models",
+    "text": "Predictive models\nThe models that will be fitted requires the data to be turned into a bag-of-words format. The question arises as to should we leave out stop words and also should we use the word counts or TF-IDF weighted counts of the words that appear in each sentence. This is explained in the following sections\n\nBag of words model\nThe machine learning algorithms that will be applied in the paper accept a certain format of text data as they cannot operate on raw text. This means the data set must be represented in a numerical form prior being feed into a machine learning algorithm. Topper (n.d.) The bag-of-words model is used to for this , one can think of this as a method to convert words to numerical representation.\nIn this study, we are interested to tokenizer the data into sentences rather than words. To achieve this, the data set is tokenized using token 1 as sentences. And extra column, index is added which shows the index of the sentences in the data . The tibble is further tokenized into words. The bag of words model will be based on the top 1000 most used words by the presidents. AN\n\n\ntf-tdf model\nThis model measures the importance of a word to a document in a collection of documents ( Robinson (n.d.) ) This is measureed by how frequently a words occurs in a document, which is termed term frequency (tf). For the bag of words model, we need to consider whether to remove stop words or not. But this model uses the approach where it looks at a term’s inverse document frequency (idf), this decreases the weight for commonly used words and increase the weights for those words that are not commonly used in the document. This implies for this model, we do not have remove stop words. The inverse document frequency of any given term is defined as\n\nidf(\\text{term}) = \\ln \\left( \\frac{n_{\\text{docs}}}{n_{\\text{docs containing term}}} \\right)\n\\tag{1}\nwhere n_{\\text{docs}} is the number of documents. The bind_tf_idf() function available on the tidyverse library to convert our data set to this format. Equation 1 can be applied if one does the conversion form first principles , which is essentially what the function is performing.\n\n\nNeural network\nIn this section , we fit a multi-layer perceptron Neural network. This network solves the shortcoming of the Feedforward Neural Network of not being able to learn through backpropagation. It is mainly used for classification problem which is exactly what we have. Since we have 6 presidents, this can be considered as a multiclassification problem with 6 classes. The fitting of the Neural Network is implemented using keras package in R. The parameters involved in fitting the model in keras are explained below:\nkeras_model_sequential() This part we specify the number of layers in our model and the activation function that each must have . The activation function used depends on the type of data set in question.\nThe most common used activation functions are sigmoid, ReLU and softmax .\nFor the base model, we used 3 layersthe the softmax activation will be used for output layer and ReLU activation for the input layers.\n\ncompile()\nThis is the step one specify the loss function , optimizer and metrics. In our case, since this is a classification problem with 6 classes, the categorical_crossentropy is used. We use accuracy for metric and adam for the optimizer.\nTo fit the model, we specify the response variable and input variable and the number of epochs ."
   }
 ]

@@ -3,15 +3,14 @@ project:
   output-dir: docs
 
 website:
-  title: "A Quarto Website"
-  reader-mode: false
+  title: "Data Science for Industry project"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - href: assignment.qmd
-        text: Data Science for Industry - Assignment
-
+        text: Main assignment
+echo:  false
 format:
   html:
     theme: cosmo

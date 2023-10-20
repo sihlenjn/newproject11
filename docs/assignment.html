@@ -8,7 +8,7 @@
 
 <meta name="author" content="Sihle Njonga">
 
-<title>A Quarto Website - Data Science for Industry - Assignment 2</title>
+<title>Data Science for Industry project - Data Science for Industry Assignment 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,25 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -60,6 +79,22 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -72,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">A Quarto Website</span>
+    <span class="navbar-title">Data Science for Industry project</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -86,7 +121,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./assignment.html" aria-current="page">
- <span class="menu-text">Data Science for Industry - Assignment</span></a>
+ <span class="menu-text">Main assignment</span></a>
   </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
@@ -103,14 +138,27 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract"><span class="toc-section-number">1</span>  Abstract</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="toc-section-number">2</span>  Introduction</a></li>
-  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="toc-section-number">3</span>  Methodology</a>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
   <ul class="collapse">
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">3.1</span>  Data</a></li>
+  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing">Data Pre processing</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
+  <li><a href="#predictive-models" id="toc-predictive-models" class="nav-link" data-scroll-target="#predictive-models">Predictive models</a>
+  <ul class="collapse">
+  <li><a href="#bag-of-words-model" id="toc-bag-of-words-model" class="nav-link" data-scroll-target="#bag-of-words-model">Bag of words model</a></li>
+  <li><a href="#tf-tdf-model" id="toc-tf-tdf-model" class="nav-link" data-scroll-target="#tf-tdf-model">tf-tdf model</a></li>
+  <li><a href="#neural-network" id="toc-neural-network" class="nav-link" data-scroll-target="#neural-network">Neural network</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="toc-section-number">4</span>  Results</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="toc-section-number">5</span>  Conclusion</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#bag-of-words-model-1" id="toc-bag-of-words-model-1" class="nav-link" data-scroll-target="#bag-of-words-model-1">Bag of words model</a></li>
+  </ul></li>
+  <li><a href="#discussion-and-conclusion" id="toc-discussion-and-conclusion" class="nav-link" data-scroll-target="#discussion-and-conclusion">Discussion and conclusion</a></li>
+  <li><a href="#list-of-packages-used-in-r" id="toc-list-of-packages-used-in-r" class="nav-link" data-scroll-target="#list-of-packages-used-in-r">List of packages used in <code>R</code></a></li>
+  <li><a href="#data-accessibility" id="toc-data-accessibility" class="nav-link" data-scroll-target="#data-accessibility">Data accessibility</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
     </div>
@@ -119,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Science for Industry - Assignment 2</h1>
+<h1 class="title">Data Science for Industry Assignment 2</h1>
 </div>
 
 
@@ -140,28 +188,148 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="abstract" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Abstract</h1>
+<div class="cell">
+
+</div>
+<section id="abstract" class="level1">
+<h1>Abstract</h1>
+<p>Start with textmining….</p>
+<p>The State of the Nation Address of the President of South Africa (SONA) is an annual event in which the President of South Africa reports on the status of the nation, normally to the resumption of a joint sitting of Parliament. This tends to be a long speech detailing every aspect on the state of the country. In this paper, we construct and compare three predictive models that take a sentence of text as input and return a prediction of which president was the source of that sentence. The 3 predictive models which are compared are neural networks, decision tree and random forest. The dataset to which the models will be fitted on is a text data containing the speeches of the president from 1994 through to 2022 (sourced from <a href="https://www.gov.za/state-nation-address">SONA speeches</a> )</p>
+<p>Our findings reveal that ….</p>
 </section>
-<section id="introduction" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Introduction</h1>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The objective of this paper is to construct at least three predictive models that takes a sentence of text as input and return a prediction of which president was the source of the that sentence. The data set that will be used is the State of the Nation Address of the President of South Africa (SONA). The data set contains speeches of all the SONA from 1994 to 2022. This is a multi-classification problem with 6 classes since we had 6 presidents who have done speech in the specified period.</p>
+<p>Th paper is divided into three main sections namely methodology , results and conclusion. The methodology sections contains 3 sub-sections outlined below:</p>
+<ul>
+<li><p>Data pre processing - overview of how the data was cleaned and transformed to the required form in order to apply the predictive models and also conduct Exploratory Data Analysis..</p></li>
+<li><p>Exploratory Data Analysis - summary of the data set where we look at the most used words and <span class="math inline">n-</span>grams by the presidents. We also take a closer looker at president Cyril Ramaphosa speech for pre and post Covid-19 , these are the 2020 and 2021 speeches. The</p></li>
+<li><p>Fitted predictive models - in this subsection , we provide a brief theory behind all the predictive models fitted in our dataset and what exactly they do.</p></li>
+</ul>
+<p>The results section contain all the results of our</p>
 </section>
-<section id="methodology" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Methodology</h1>
-<section id="data" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="data"><span class="header-section-number">3.1</span> Data</h2>
+<section id="methodology" class="level1">
+<h1>Methodology</h1>
+<section id="data-pre-processing" class="level2">
+<h2 class="anchored" data-anchor-id="data-pre-processing">Data Pre processing</h2>
+<p>The data set is loaded in <code>R</code></p>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>In this study , the SONA data set will be used. This dataset contains all the speeches of the previous presidents from 1994 to 2023 which is in the form of text file. Pre processing of the data set is conducted so that we’re able to transform the dataset into the required form. The steps taken to clean and transform the data are indicated below.</p>
+</section>
+<section id="predictive-models" class="level2">
+<h2 class="anchored" data-anchor-id="predictive-models">Predictive models</h2>
+<p>The models that will be fitted requires the data to be turned into a bag-of-words format. The question arises as to should we leave out stop words and also should we use the word counts or TF-IDF weighted counts of the words that appear in each sentence. This is explained in the following sections</p>
+<section id="bag-of-words-model" class="level3">
+<h3 class="anchored" data-anchor-id="bag-of-words-model">Bag of words model</h3>
+<p>The machine learning algorithms that will be applied in the paper accept a certain format of text data as they cannot operate on raw text. This means the data set must be represented in a numerical form prior being feed into a machine learning algorithm. <span class="citation" data-cites="blogBagModel">Topper (<a href="#ref-blogBagModel" role="doc-biblioref">n.d.</a>)</span> The bag-of-words model is used to for this , one can think of this as a method to convert words to numerical representation.</p>
+<p>In this study, we are interested to tokenizer the data into sentences rather than words. To achieve this, the data set is tokenized using token <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as sentences. And extra column, index is added which shows the index of the sentences in the data . The tibble is further tokenized into words. The bag of words model will be based on the top 1000 most used words by the presidents. AN</p>
+</section>
+<section id="tf-tdf-model" class="level3">
+<h3 class="anchored" data-anchor-id="tf-tdf-model">tf-tdf model</h3>
+<p>This model measures the importance of a word to a document in a collection of documents ( <span class="citation" data-cites="textMiningBook">Robinson (<a href="#ref-textMiningBook" role="doc-biblioref">n.d.</a>)</span> ) This is measureed by how frequently a words occurs in a document, which is termed <em>term frequency (tf)</em>. For the bag of words model, we need to consider whether to remove stop words or not. But this model uses the approach where it looks at a term’s inverse document <em>frequency (idf),</em> this decreases the weight for commonly used words and increase the weights for those words that are not commonly used in the document. This implies for this model, we do not have remove stop words. The inverse document frequency of any given term is defined as</p>
+<p><span id="eq-idf"><span class="math display">
+idf(\text{term}) = \ln \left( \frac{n_{\text{docs}}}{n_{\text{docs containing term}}} \right)
+\tag{1}</span></span></p>
+<p>where <span class="math inline">n_{\text{docs}}</span> is the number of documents. The <code>bind_tf_idf()</code> function available on the <code>tidyverse</code> library to convert our data set to this format. <a href="#eq-idf">Equation&nbsp;1</a> can be applied if one does the conversion form first principles , which is essentially what the function is performing.</p>
+</section>
+<section id="neural-network" class="level3">
+<h3 class="anchored" data-anchor-id="neural-network">Neural network</h3>
+<p>In this section , we fit a multi-layer perceptron Neural network. This network solves the shortcoming of the Feedforward Neural Network of not being able to learn through backpropagation. It is mainly used for classification problem which is exactly what we have. Since we have 6 presidents, this can be considered as a multiclassification problem with 6 classes. The fitting of the Neural Network is implemented using <code>keras</code> package in <code>R</code>. The parameters involved in fitting the model in <code>keras</code> are explained below:</p>
+<p><code>keras_model_sequential()</code> This part we specify the number of layers in our model and the activation function that each must have . The activation function used depends on the type of data set in question.</p>
+<p>The most common used activation functions are <code>sigmoid</code>, <code>ReLU</code> and <code>softmax</code> .</p>
+<p>For the base model, we used 3 layersthe the softmax activation will be used for output layer and ReLU activation for the input layers.</p>
+<p><br>
+<code>compile()</code><br>
+This is the step one specify the loss function , optimizer and metrics. In our case, since this is a classification problem with 6 classes, the <code>categorical_crossentropy</code> is used. We use <code>accuracy</code> for metric and <code>adam</code> for the optimizer.</p>
+<p>To fit the model, we specify the response variable and input variable and the number of <code>epochs</code> .</p>
 </section>
 </section>
-<section id="results" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Results</h1>
 </section>
-<section id="conclusion" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Conclusion</h1>
+<section id="results" class="level1">
+<h1>Results</h1>
+<section id="bag-of-words-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="bag-of-words-model-1">Bag of words model</h3>
+<p>With stopwords , test accuracy 1.3%</p>
+</section>
+</section>
+<section id="discussion-and-conclusion" class="level1">
+<h1>Discussion and conclusion</h1>
+<p>To conclude, as seen from <span class="citation" data-cites="Wood2006">Wood (<a href="#ref-Wood2006" role="doc-biblioref">2006</a>)</span>, the model produced an MSE of 0.90.</p>
+</section>
 
 
-</section>
 
-</main> <!-- /main -->
+
+
+<div id="quarto-appendix" class="default"><section id="list-of-packages-used-in-r" class="level1 appendix"><h2 class="quarto-appendix-heading">List of packages used in <code>R</code></h2><div class="quarto-appendix-contents">
+
+<p>In this section , we includes the main packages that we used in <code>R</code> and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in <a href="#tbl-packages">Table&nbsp;1</a> .</p>
+<div id="tbl-packages" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: List of packages used in the study</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package name</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tidyverse</code></td>
+<td>Data cleaning and pre-processing</td>
+</tr>
+<tr class="even">
+<td><code>tidytext</code> <code>stingr</code></td>
+<td>Manipulation of text data</td>
+</tr>
+<tr class="odd">
+<td><code>keras</code></td>
+<td>Fit a feed-forward neural network</td>
+</tr>
+<tr class="even">
+<td><code>gridExtra</code></td>
+<td>Organize multiple plots produced by the <code>ggplot</code> package to be one figure during EDA.</td>
+</tr>
+<tr class="odd">
+<td><code>rpart</code></td>
+<td>Fitting a classification tree for bag of words and TF-IDF models.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></section><section id="data-accessibility" class="level1 appendix"><h2 class="quarto-appendix-heading">Data accessibility</h2><div class="quarto-appendix-contents">
+
+<p>The originial dataset used for this study can be found in <a href="https://www.gov.za/state-nation-address">link</a> . We have also read the individual text files of the speeches for reading the data on <code>R</code> from Ian’s github page.&nbsp;All the analysis and fitting of models in this study will conducted using the free Statistical Computing software <code>R</code>. <span class="citation" data-cites="R">R Core Team (<a href="#ref-R" role="doc-biblioref">2023</a>)</span></p>
+</div></section><section id="references" class="level1 appendix"><h2 class="quarto-appendix-heading"></h2><div class="quarto-appendix-contents">
+
+
+
+
+</div></section><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-R" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2023. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-textMiningBook" class="csl-entry" role="doc-biblioentry">
+Robinson, J. S. A. D. n.d. <span>“Welcome to <span>Text</span> <span>Mining</span> with <span>R</span> <span>Text</span> <span>Mining</span> with <span>R</span>.”</span> https://www.tidytextmining.com/.
+</div>
+<div id="ref-blogBagModel" class="csl-entry" role="doc-biblioentry">
+Topper, Noah. n.d. <span>“Bag of Words Model in NLP Explained.”</span> https://www.builtin.com/machine-learning/bag-of-words.
+</div>
+<div id="ref-Wood2006" class="csl-entry" role="doc-biblioentry">
+Wood, Simon N. 2006. <em>Generalized Additive Models: An Introduction with r</em>. Boca Raton: Chapman &amp; Hall/CRC.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>A unit used to split the data in the process of tokenization.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -1,24 +1,116 @@
 ---
-title: "Data Science for Industry - Assignment 2"
+title: "Data Science for Industry Assignment 2"
 author: "Sihle Njonga"
 toc: true
-number-sections: true
+number-sections: false
 format:
   html: 
-    code-fold: true
+    code-fold: false
     html-math-method: katex
+bibliography: ref.bib
 ---
 
-\newpage
+```{r message= FALSE, warning=FALSE}
+# Install all the required packages
+library(kableExtra)
+```
 
 # Abstract
 
+Start with textmining....
+
+The State of the Nation Address of the President of South Africa (SONA) is an annual event in which the President of South Africa reports on the status of the nation, normally to the resumption of a joint sitting of Parliament. This tends to be a long speech detailing every aspect on the state of the country. In this paper, we construct and compare three predictive models that take a sentence of text as input and return a prediction of which president was the source of that sentence. The 3 predictive models which are compared are neural networks, decision tree and random forest. The dataset to which the models will be fitted on is a text data containing the speeches of the president from 1994 through to 2022 (sourced from [SONA speeches](https://www.gov.za/state-nation-address) )
+
+Our findings reveal that ....
+
 # Introduction
+
+The objective of this paper is to construct at least three predictive models that takes a sentence of text as input and return a prediction of which president was the source of the that sentence. The data set that will be used is the State of the Nation Address of the President of South Africa (SONA). The data set contains speeches of all the SONA from 1994 to 2022. This is a multi-classification problem with 6 classes since we had 6 presidents who have done speech in the specified period.
+
+Th paper is divided into three main sections namely methodology , results and conclusion. The methodology sections contains 3 sub-sections outlined below:
+
+-   Data pre processing - overview of how the data was cleaned and transformed to the required form in order to apply the predictive models and also conduct Exploratory Data Analysis..
+
+-   Exploratory Data Analysis - summary of the data set where we look at the most used words and $n-$grams by the presidents. We also take a closer looker at president Cyril Ramaphosa speech for pre and post Covid-19 , these are the 2020 and 2021 speeches. The
+
+-   Fitted predictive models - in this subsection , we provide a brief theory behind all the predictive models fitted in our dataset and what exactly they do.
+
+The results section contain all the results of our
 
 # Methodology
 
-## Data 
+## Data Pre processing
+
+The data set is loaded in `R`
+
+## Exploratory Data Analysis
+
+In this study , the SONA data set will be used. This dataset contains all the speeches of the previous presidents from 1994 to 2023 which is in the form of text file. Pre processing of the data set is conducted so that we're able to transform the dataset into the required form. The steps taken to clean and transform the data are indicated below.
+
+## Predictive models
+
+The models that will be fitted requires the data to be turned into a bag-of-words format. The question arises as to should we leave out stop words and also should we use the word counts or TF-IDF weighted counts of the words that appear in each sentence. This is explained in the following sections
+
+### Bag of words model
+
+The machine learning algorithms that will be applied in the paper accept a certain format of text data as they cannot operate on raw text. This means the data set must be represented in a numerical form prior being feed into a machine learning algorithm. @blogBagModel The bag-of-words model is used to for this , one can think of this as a method to convert words to numerical representation.
+
+In this study, we are interested to tokenizer the data into sentences rather than words. To achieve this, the data set is tokenized using token [^1] as sentences. And extra column, index is added which shows the index of the sentences in the data . The tibble is further tokenized into words. The bag of words model will be based on the top 1000 most used words by the presidents. AN
+
+[^1]: A unit used to split the data in the process of tokenization.
+
+### tf-tdf model
+
+This model measures the importance of a word to a document in a collection of documents ( @textMiningBook ) This is measureed by how frequently a words occurs in a document, which is termed *term frequency (tf)*. For the bag of words model, we need to consider whether to remove stop words or not. But this model uses the approach where it looks at a term's inverse document *frequency (idf),* this decreases the weight for commonly used words and increase the weights for those words that are not commonly used in the document. This implies for this model, we do not have remove stop words. The inverse document frequency of any given term is defined as
+
+$$
+idf(\text{term}) = \ln \left( \frac{n_{\text{docs}}}{n_{\text{docs containing term}}} \right)
+$$ {#eq-idf}
+
+where $n_{\text{docs}}$ is the number of documents. The `bind_tf_idf()` function available on the `tidyverse` library to convert our data set to this format. @eq-idf can be applied if one does the conversion form first principles , which is essentially what the function is performing.
+
+### Neural network
+
+In this section , we fit a multi-layer perceptron Neural network. This network solves the shortcoming of the Feedforward Neural Network of not being able to learn through backpropagation. It is mainly used for classification problem which is exactly what we have. Since we have 6 presidents, this can be considered as a multiclassification problem with 6 classes. The fitting of the Neural Network is implemented using `keras` package in `R`. The parameters involved in fitting the model in `keras` are explained below:
+
+`keras_model_sequential()` This part we specify the number of layers in our model and the activation function that each must have . The activation function used depends on the type of data set in question.
+
+The most common used activation functions are `sigmoid`, `ReLU` and `softmax` .
+
+For the base model, we used 3 layersthe the softmax activation will be used for output layer and ReLU activation for the input layers.
+
+\
+`compile()`\
+This is the step one specify the loss function , optimizer and metrics. In our case, since this is a classification problem with 6 classes, the `categorical_crossentropy` is used. We use `accuracy` for metric and `adam` for the optimizer.
+
+To fit the model, we specify the response variable and input variable and the number of `epochs` .
 
 # Results
 
-# Conclusion
+### Bag of words model
+
+With stopwords , test accuracy 1.3%
+
+# Discussion and conclusion
+
+To conclude, as seen from @Wood2006, the model produced an MSE of 0.90.
+
+# List of packages used in `R` {.appendix}
+
+In this section , we includes the main packages that we used in `R` and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in @tbl-packages .
+
+| Package name         | Usage                                                                                 |
+|----------------|------------------------------------------------|
+| `tidyverse`          | Data cleaning and pre-processing                                                      |
+| `tidytext` `stingr`  | Manipulation of text data                                                             |
+| `keras`              | Fit a feed-forward neural network                                                     |
+| `gridExtra`          | Organize multiple plots produced by the `ggplot` package to be one figure during EDA. |
+| `rpart`              | Fitting a classification tree for bag of words and TF-IDF models.                     |
+
+: List of packages used in the study {#tbl-packages}
+
+# Data accessibility {.appendix}
+
+The originial dataset used for this study can be found in [link](https://www.gov.za/state-nation-address) . We have also read the individual text files of the speeches for reading the data on `R` from Ian's github page. All the analysis and fitting of models in this study will conducted using the free Statistical Computing software `R`. @R
+
+# References {.appendix}
