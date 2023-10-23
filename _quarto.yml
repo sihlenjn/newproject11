@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Data Science for Industry project"
+  title: "Data Science for Industry Project"
   navbar:
     left:
       - href: index.qmd
