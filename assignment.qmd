@@ -8,10 +8,10 @@ format:
   html: 
     code-fold: false
     html-math-method: katex
-fig-width: 5
+fig-width: 6
 fig-height: 5
 fig-align: "center"
-fig-asp: 0.7
+fig-asp: 1
 fig-dpi: 300
 bibliography: ref.bib
 ---
