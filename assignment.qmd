@@ -1,110 +1,790 @@
 ---
 title: "Data Science for Industry Assignment 2"
 author: "Sihle Njonga"
+institute: "University of Cape Town"
 toc: true
 number-sections: false
 format:
   html: 
     code-fold: false
     html-math-method: katex
+fig-width: 8
+fig-height: 5
+fig-align: "center"
+fig-asp: 0.7
+fig-dpi: 300
 bibliography: ref.bib
 ---
 
-```{r message= FALSE, warning=FALSE}
-# Install all the required packages
-library(kableExtra)
+```{r setup,include = FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+```
+
+```{r packages}
+# Load all the required packages
+library(tidyverse)
+library(stringr)
+library(rpart)
+library(gridExtra)
+# library(tensorflow)
+library(rpart)
+library(ggplot2)
+library(tidytext)
 ```
 
 # Abstract
 
-Start with textmining ....
-
-The State of the Nation Address of the President of South Africa (SONA) is an annual event in which the President of South Africa reports on the status of the nation, normally to the resumption of a joint sitting of Parliament. This tends to be a long speech detailing every aspect on the state of the country. In this paper, we construct and compare three predictive models that take a sentence of text as input and return a prediction of which president was the source of that sentence. The 3 predictive models which are compared are neural networks, decision tree and random forest.
-
-Our findings reveal that ....
+This paper explores the application of different predictive models to text data, the predictive models applied are neural networks and tree based methods. We construct and compare three predictive models using different forms of the data set as our input. The aim is to build a model that take a sentence of text as input and return a prediction of which president was the source of that sentence. The data set used is the State of the Nation Address of the President of South African ( SONA) speeches, which contains all the speeches from 1994 to 2023. Our findings through different explorations of the mentioned predictive models, with different parameters, the neural network models performed better the decision tree methods. However, the neural network returned an accuracy in the margins $50\% - 55\%$ on unseen data, which is quite low. Imbalance
 
 # Introduction
 
-The objective of this paper is to construct at least three predictive models that takes a sentence of text as input and return a prediction of which president was the source of the that sentence. The data set that will be used is the State of the Nation Address of the President of South Africa (SONA). The data set contains speeches of all the SONA from 1994 to 2022. This is a multi-classification problem with 6 classes since we had 6 presidents who have done speech in the specified period.
+The objective of this paper is to construct at least three predictive models that takes a sentence of text as an input and return a prediction of which president was the source of that sentence. The data set that will be used is the State of the Nation Address of the President of South Africa (SONA). The data set contains speeches of all the SONA speeches from 1994 to 2023. This is a multi-classification problem with 6 classes since we had 6 presidents who have delivered speeches in the specified period.
 
-Th paper is divided into three main sections namely methodology , results and conclusion. The methodology sections contains 3 sub-sections outlined below:
+Th paper is divided into three main sections namely Exploratory Data Analysis (EDA), Methodology and Results and Discussion. The overview of each section is as follows:
 
--   Data pre processing - overview of how the data was cleaned and transformed to the required form in order to apply the predictive models and also conduct Exploratory Data Analysis..
+-   Exploratory Data Analysis - this section contains the following sub-sections:
 
--   Exploratory Data Analysis - summary of the data set where we look at the most used words and $n-$grams by the presidents. We also take a closer looker at president Cyril Ramaphosa speech for pre and post Covid-19 , these are the 2020 and 2021 speeches. The
+    -   Data pre-processing and data analysis - we provide information on how the data was cleaned and transformed so that we are conduct data analysis. The data analysis part includes an overview of the most commonly used words and bigrams in the speeches, we also take a closer look at president Cyril Ramaphosa's 2020 and 2021 speeches.
 
--   Fitted predictive models - in this subsection , we provide a brief theory behind all the predictive models fitted in our dataset and what exactly they do.
+    -   Imbalanced data -in this section, analysis the average number of sentence used by each president in their speeches and see which president in under presented with respect to the length of their speech.
 
-The results section contain all the results of our
+-   Methodology - this section contains the following sub-sections:
+
+    -   Bag of words model and TF-IDF model - The data set is converted to the two format which is what will be used the input in the predictive models that will be fitted.
+
+    -   Predictive models - In this sub-section, we provide a brief theory on each of the predictive models that will be fitted namely neural networks and tree based methods.
+
+-   Results and Conclusion - the results of the fitted models are provided in this section. The later section will compare the performance of the models on the different data sets used and any short comings. We also touch on some improvements that can be made to the analysis.
+
+# Exploratory Data Analysis
+
+## Data pre processing
+
+Before we begin with the data cleaning, we load the data by the file names. The content (texts) of each speech is then loaded to an empty vector which is created prior the beginning of the cleaning process. It worth to note the individual speech contents are take from Ian's github page and read as characters to the empty vector. The resulting data frame has two columns *filename* and *speech*. New columns, president, year and date are added to indicate from which president the speeches are from and also the dates the speeches took place. These are generated by using the file names since each file name contains the president names and the dates of speeches. Any unnecessary text is removed from the data set, these includes website links , encoding for new lines `\n` , backlashes and make sure all the dates are in the form $\text{dd-mm-yyyy}$. All the speeches being with the date on which they were delivered, we remove these in the data as they are not of interest. These dates are used to generate the dates column in the data frame , the dates are removed after the dates column has been generated. A new column, named `pres_num` ,is also included where each president name is denoted by integers from 1 to 6. All these data cleaning procedure are conducted using the `tidyverse` and `tidytext` packages.
+
+```{r load_data}
+  # read in text data files and organize these into a data frame
+  filenames <- c('1994_post_elections_Mandela.txt', '1994_pre_elections_deKlerk.txt', 
+                 '1995_Mandela.txt', '1996_Mandela.txt', '1997_Mandela.txt', 
+                 '1998_Mandela.txt', '1999_post_elections_Mandela.txt', 
+                 '1999_pre_elections_Mandela.txt', '2000_Mbeki.txt', '2001_Mbeki.txt',
+                 '2002_Mbeki.txt', '2003_Mbeki.txt', '2004_post_elections_Mbeki.txt',
+                 '2004_pre_elections_Mbeki.txt','2005_Mbeki.txt', '2006_Mbeki.txt',
+                 '2007_Mbeki.txt', '2008_Mbeki.txt', '2009_post_elections_Zuma.txt', 
+                 '2009_pre_elections_ Motlanthe.txt','2010_Zuma.txt', '2011_Zuma.txt',
+                 '2012_Zuma.txt', '2013_Zuma.txt', '2014_post_elections_Zuma.txt', 
+                 '2014_pre_elections_Zuma.txt', '2015_Zuma.txt', '2016_Zuma.txt', 
+                 '2017_Zuma.txt', '2018_Ramaphosa.txt', '2019_post_elections_Ramaphosa.txt',
+                 '2019_pre_elections_Ramaphosa.txt','2020_Ramaphosa.txt', '2021_Ramaphosa.txt',
+                 '2022_Ramaphosa.txt', '2023_Ramaphosa.txt')
+  
+  
+  this_speech    <- c()
+  this_speech[1] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_post_elections_Mandela.txt', nchars = 27050)
+  this_speech[2] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_pre_elections_deKlerk.txt', nchars = 12786)
+  this_speech[3] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1995_Mandela.txt', nchars = 39019)
+  this_speech[4] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1996_Mandela.txt', nchars = 39524)
+  this_speech[5] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1997_Mandela.txt', nchars = 37489)
+  this_speech[6] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1998_Mandela.txt', nchars = 45247)
+  this_speech[7] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_post_elections_Mandela.txt', nchars = 34674)
+  this_speech[8] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_pre_elections_Mandela.txt', nchars = 41225)
+  this_speech[9] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2000_Mbeki.txt', nchars = 37552)
+  this_speech[10] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2001_Mbeki.txt', nchars = 41719)
+  this_speech[11] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2002_Mbeki.txt', nchars = 50544)
+  this_speech[12] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2003_Mbeki.txt', nchars = 58284)
+  this_speech[13] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_post_elections_Mbeki.txt', nchars = 34590)
+  this_speech[14] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_pre_elections_Mbeki.txt', nchars = 39232)
+  this_speech[15] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2005_Mbeki.txt', nchars = 54635)
+  this_speech[16] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2006_Mbeki.txt', nchars = 48643)
+  this_speech[17] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2007_Mbeki.txt', nchars = 48641)
+  this_speech[18] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2008_Mbeki.txt', nchars = 44907)
+  this_speech[19] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_post_elections_Zuma.txt', nchars = 31101)
+  this_speech[20] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_pre_elections_Motlanthe.txt', nchars = 47157)
+  this_speech[21] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2010_Zuma.txt', nchars = 26384)
+  this_speech[22] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2011_Zuma.txt', nchars = 33281)
+  this_speech[23] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2012_Zuma.txt', nchars = 33376)
+  this_speech[24] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2013_Zuma.txt', nchars = 36006)
+  this_speech[25] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_post_elections_Zuma.txt', nchars = 29403)
+  this_speech[26] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_pre_elections_Zuma.txt', nchars = 36233)
+  this_speech[27] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2015_Zuma.txt', nchars = 32860)
+  this_speech[28] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2016_Zuma.txt', nchars = 32464)
+  this_speech[29] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2017_Zuma.txt', nchars = 35981)
+  this_speech[30] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2018_Ramaphosa.txt', nchars = 33290)
+  this_speech[31] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_post_elections_Ramaphosa.txt', nchars = 42112)
+  this_speech[32] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_pre_elections_Ramaphosa.txt', nchars = 56960)
+  this_speech[33] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2020_Ramaphosa.txt', nchars = 47910)
+  this_speech[34] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2021_Ramaphosa.txt', nchars = 43352)
+  this_speech[35] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
+  this_speech[36] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
+  
+  sona <- data.frame(filename = filenames, speech = this_speech, stringsAsFactors = FALSE)
+  
+  # extract year and president for each speech
+  sona$year <- str_sub(sona$filename, start = 1, end = 4)
+  sona$president_13 <- str_remove_all(str_extract(sona$filename, "[dA-Z].*\\."), "\\.")
+  
+  # clean the sona dataset by adding the date and removing unnecessary text
+  replace_reg <- '(http.*?(\\s|.$))|(www.*?(\\s|.$))|&amp;|&lt;|&gt;|\n'
+  
+  sona <- sona %>%
+    mutate(speech = str_replace_all(speech, replace_reg , ' ')
+           ,date = str_sub(speech, start = 1, end = 30)
+           ,date = str_replace_all(date, "February", "02")
+           ,date = str_replace_all(date, "June", "06")
+           ,date = str_replace_all(date, "Feb", "02")
+           ,date = str_replace_all(date, "May", "05")
+           ,date = str_replace_all(date, "Jun", "06")
+           ,date = str_replace_all(date, "Thursday, ","")
+           ,date = str_replace_all(date, ' ', '-')        
+           ,date = str_replace_all(date, "[A-z]",'')
+           ,date = str_replace_all(date, '-----', '')
+           ,date = str_replace_all(date, '----', '')
+           ,date = str_replace_all(date, '---', '')
+           ,date = str_replace_all(date, '--', '')
+           )
+# write the data fram as a tibble
+sona = as_tibble(sona)
+
+# Remove the dates at the beginning of the speeches
+dates_to_replace = c('24 May 1994 ','28 February 1994 ','17 February 1995 ','9 February 1996 ',
+                     '7 February 1997 ','6 February 1998 ','25 June 1999 ','5 February 1999 ',
+                     '4 February 2000 ','9 February 2001 ','8 February 2002 ','14 February 2003 ',
+                     '21 May 2004 ','6 February 2004 ','11 February 2005 ','3 February 2006 ',
+                     '9 February 2007 ','8 February 2008 ','03 June 2009 ' ,'6 February 2009 ' ,
+                     '11 February 2010 ','10 February 2011 ','09 February 2012 ','14 February 2013 ' ,
+                     '17 June 2014 ','13 February 2014 ','12 February 2015 ','11 February 2016 ',
+                     '9 February 2017 ','16 February 2018 ','20 Jun 2019 ','7 Feb 2019 ','13 February 2020 ',
+                     '11 February 2021 ','Thursday, 10 February 2022 ','Thursday, 10 February 2022 '
+)
+for (i in 1:nrow(sona)) {
+  sona$speech[i] = gsub(dates_to_replace[i],"", sona$speech[i],ignore.case = TRUE)
+}
+  
+# sona balanced (deKlerk removed)
+new_sona = sona[-2,]
+pres_bal = unique(new_sona$president_13)
+pres_num2  = c()
+for (i in 1:nrow(new_sona)) {
+  pres_num2[i] = ifelse(new_sona$president_13[i] == pres_bal[1],1,
+                              ifelse(new_sona$president_13[i] == pres_bal[2],2,
+                                     ifelse(new_sona$president_13[i] == pres_bal[3],3,
+                                            ifelse(new_sona$president_13[i] == pres_bal[4],4,5))))
+}
+# Add the numeric column for president
+new_sona = mutate(new_sona,pres_num = pres_num2)
+
+# Numeric values for the presidents
+# deKlerk   = 2  Mandela   = 1
+# Mbeki     = 3  Motlanthe = 5
+# Ramaphosa = 6  Zuma      = 4
+
+pres = unique(sona$president_13)
+pres_num  = c()
+for (i in 1:nrow(sona)) {
+  pres_num[i] = ifelse(sona$president_13[i] == pres[1],1,
+                       ifelse(sona$president_13[i] == pres[2],2,
+                              ifelse(sona$president_13[i] == pres[3],3,
+                                     ifelse(sona$president_13[i] == pres[4],4,
+                                            ifelse(sona$president_13[i] == pres[5],5,6)))))
+}
+# Add the numeric column for president
+sona = mutate(sona,pres_num = pres_num)
+#save.image(file="data.RData")
+# load('data.RData')
+```
+
+## Data Analysis
+
+In order to begin with EDA, we have to tokenize the data. As much we are interested in sentences, in our EDA will tokenize the data set by words and also sentences. This will give us insights on words that are commonly used by the presidents in their speeches.
+
+```{r top10All}
+#| label: fig-top10Words
+#| fig-cap: "Top 10 mostly common used words by all presidents."
+token_words = unnest_tokens(sona,words,speech,token = "words")
+
+# remove stop words in token_words
+president_words = token_words %>% filter(!words %in% stop_words$word)
+
+
+president_words %>% count(words,sort = TRUE) %>%
+  filter(rank(desc(n)) <= 10) %>%
+  ggplot(aes(x = reorder(words,n),y = n))+geom_col(col = 'red',fill = 'blue')+
+                        coord_flip()+xlab('') + ylab('Number of times used (n)')+
+                        theme(axis.text.y = element_text(size = 15))
+
+```
+
+@fig-top10Words depicts the top 10 most used words by the 6 presidents. In @fig-top10Words , we see that the words government , south , people and national are the most used words by the presidents. These words are indication of what the speeches are all about.
+
+```{r TopWordsIndiv}
+# Top 10 most used words by each president ####
+#| label: fig-top10eachPres
+#| fig-cap: "Top 10 most used words by each president."
+pres_words = list()
+for (i in 1:6) {
+  pres_words[[i]] = president_words %>% filter(pres_num == i)
+}
+
+mandela = pres_words[[1]] %>% count(words,sort = TRUE) %>%
+           filter(rank(desc(n)) <= 5) %>% ggplot(aes(x=reorder(words,n),y = n))+geom_col(fill=1)+
+           coord_flip()+xlab('')+ylab('n') + ggtitle("Mandela")
+
+deklerk = pres_words[[2]] %>% count(words,sort = TRUE) %>% filter(rank(desc(n)) <= 5) %>%
+          ggplot(aes(x=reorder(words,n),y=n))+geom_col(fill = 2)+
+          coord_flip()+xlab('')+ylab('n') + ggtitle("deKlerk")
+
+mbeki = pres_words[[3]] %>% count(words,sort = TRUE) %>%
+        filter(rank(desc(n)) <= 5) %>%
+        ggplot(aes(x=reorder(words,n),y=n))+geom_col(fill=3)+
+        coord_flip()+xlab('')+ylab('n') + ggtitle('Mbeki')
+
+zuma = pres_words[[4]] %>% count(words,sort = TRUE) %>%
+        filter(rank(desc(n)) <= 5) %>%
+        ggplot(aes(x = reorder(words,n),y = n))+geom_col(fill = 4)+
+        coord_flip()+xlab('') + ylab('n') + ggtitle('Zuma')
+
+motlanthe = pres_words[[5]] %>% count(words,sort = TRUE) %>%
+          filter(rank(desc(n)) <= 5) %>%
+          ggplot(aes(x = reorder(words,n),y = n))+geom_col(fill = 5)+
+          coord_flip()+xlab('') + ylab('n') + ggtitle('Motlanthe')
+
+ramaphosa = pres_words[[6]] %>% count(words,sort = TRUE) %>%
+            filter(rank(desc(n)) <= 5) %>%
+            ggplot(aes(x = reorder(words,n),y = n))+geom_col(fill = 6)+
+            coord_flip()+xlab('') + ylab('n') + ggtitle('Ramaphosa')
+
+figure = grid.arrange(mandela,deklerk,mbeki,zuma,motlanthe,ramaphosa)
+```
+
+```{r bigrams, eval = FALSE}
+# This plot is not included
+# Top 10 most used bigrams ####
+#| label: fig-bigramseachPres
+#| fig-cap: "Top 10 most used bigrams by each president."
+token_bigrams = unnest_tokens(sona,bigrams,speech,token = "ngrams",n = 2)
+
+# separate the bigrams
+bigrams_separated = token_bigrams %>% 
+                    separate(bigrams, c('word1','word2'),sep = ' ')
+
+# remove stop words
+bigrams_filtered = bigrams_separated %>% 
+                   filter(!word1 %in% stop_words$word & !word2 %in% stop_words$word)
+
+# join the bigrams
+biagrams_joined = bigrams_filtered %>% unite(bigram,word1,word2,sep =' ')
+
+# bigrams_filtered  %>% count(word1,word2,sort=TRUE) %>% 
+                    # filter(rank(desc(n)) <= 10) %>% na.omit()
+
+```
+
+In @fig-ramaphosa_speeches and @fig-ramaphosa_bigrams , we look at Ramaphosa's speeches for the year 2020 and 2021. These speeches are of interest as they were made before the start of Covid-19 and after Covid-19. Upon analysing the data, sort the top words and bigrams used, we noticed that figures which were included in this speech were treated as individual words. For example, if the figure R250 000 was mentioned somewhere in the speech, R250 and 000 were treated as individual words. So after we extracted Ramaphosa's 2020 and 2021 speeches, we cleaned the data to remove these space between the numbers. Before we did the cleaning, 000 was the most used 'word' in the speech for 2021 but not for 2020. This implies that a lot numbers were mentioned in Ramaphosa's speech compared to his 2020 speech. There isn't much difference between the words used in the 2020 and 2021 speeches in @fig-ramaphosa_speeches.
+
+```{r ramaphosa}
+#| label: fig-ramaphosa_speeches
+#| fig-cap: "Comparison of the most used words by Ramaphosa for 2020 and 2021 speeches."
+rama_20_21 = sona %>% filter(pres_num == 6 & year == c(2020,2021))
+
+# Remove double spaces between the numbers as it reads 000 as a text
+# - report on this 
+rama_20_21 = rama_20_21 %>% 
+             mutate(speech = gsub("(\\d)\\s(\\d)", "\\1\\2",speech))
+
+# Most common words ####
+# Tokenize these speeches
+token_words_rama_2021 = unnest_tokens(rama_20_21,words,speech,token = "words")
+
+# Remove stop words
+rama_20_21.words = token_words_rama_2021 %>% filter(!words %in% stop_words$word)
+
+ramaphosa_words_2021 = rama_20_21.words %>% filter(year == 2021)
+ramaphosa_words_2020 = rama_20_21.words %>% filter(year == 2020)
+
+p1 = ramaphosa_words_2021 %>% count(words,sort = TRUE) %>%
+                              filter(rank(desc(n))<= 10) %>%
+                              ggplot(aes(x=reorder(words,n),y=n))+
+                                     geom_col(fill=1)+
+                                     coord_flip()+xlab('')+
+                                      ylab('n')+ggtitle("Ramaphosa 2021 speech")
+
+p2 = ramaphosa_words_2020 %>% count(words,sort = TRUE) %>%
+                        filter(rank(desc(n))<= 10) %>%
+                        ggplot(aes(x=reorder(words,n),y=n))+
+                        geom_col(fill=2)+
+                        coord_flip()+xlab('')+
+                        ylab('n')+ggtitle("Ramaphosa 2020 speech")
+
+figure = grid.arrange(p2,p1,ncol = 2)
+```
+
+In Figure \ref{fig:ramabigrams}, this is where we notice a difference between the two speeches. As one would expect, the bi-grams Covid-19, million people and create jobs appears in the 2021 speech. The top 3 most used bi-grams are similar in both speeches.
+
+```{r ramabigrams, fig.cap="Comparison of the most used bigrams by Ramaphosa for 2020 and 2021 speeches."}
+# Bigrams  for ramaphosa ####
+#| label: fig-ramaphosa_bigrams
+#| fig-cap: "Comparison of the most used bigrams by Ramaphosa for 2020 and 2021 speeches."
+bigrams_2020 = rama_20_21 %>% filter(year == 2020) %>% 
+               unnest_tokens(bigrams,speech,token = "ngrams",n = 2)
+bigrams_2021 = rama_20_21 %>% filter(year == 2021) %>% 
+               unnest_tokens(bigrams,speech,token = "ngrams",n = 2)
+
+# separate the bigrams
+bigrams_separated_20 = bigrams_2020 %>% 
+                        separate(bigrams, c('word1','word2'),sep = ' ')
+bigrams_separated_21 = bigrams_2021 %>% 
+                       separate(bigrams, c('word1','word2'),sep = ' ')
+
+# remove stop words
+bigrams_filtered_20 = bigrams_separated_20 %>% 
+                      filter(!word1 %in% stop_words$word & !word2 %in% stop_words$word)
+bigrams_filtered_21 = bigrams_separated_21 %>% 
+                      filter(!word1 %in% stop_words$word & !word2 %in% stop_words$word)
+
+# join the bigrams
+biagrams_joined_20 = bigrams_filtered_20 %>% unite(bigram,word1,word2,sep =' ')
+biagrams_joined_21 = bigrams_filtered_21 %>% unite(bigram,word1,word2,sep =' ')
+
+p2020 = biagrams_joined_20 %>% count(bigram,sort=TRUE) %>% 
+                    filter(rank(desc(n)) <= 10) %>% na.omit() %>%
+                    ggplot(aes(x=reorder(bigram,n),y=n))+
+                    geom_col(fill=1,width = 0.6)+
+                    coord_flip()+xlab('')+
+                    ylab('n')+ggtitle("2020")
+
+p2021 = biagrams_joined_21 %>% count(bigram,sort = TRUE) %>% 
+                    filter(rank(desc(n)) <= 10) %>% na.omit() %>%
+                    ggplot(aes(x=reorder(bigram,n),y=n))+
+                    geom_col(fill=2,width = 0.6)+
+                    coord_flip()+xlab('')+
+                    ylab('n')+ggtitle("2021")
+
+grid.arrange(p2020,p2021,ncol = 2)
+```
+
+## Imbalanced data
+
+In @fig-average_sentences , the average number of sentence for each speech is displayed for each president. We can see that deKlerk's speech had less number of sentences on average compared to the other presidents. As much as Motlanthe had only 1 speech, but the average number of sentence in his speech was in the same range as that of Zuma, Mbeki , Mandela and Ramaphosa.
+
+```{r average_sentence}
+#| label: fig-average_sentences
+#| fig-cap: "Average number of sentences used by the presidents in their speeches."
+
+# Function to calculate the average number sentences used by each president
+average_sentence = function(text){
+  
+  # split where there's is a full-stop (.), exclamation mark  (!) or question mark (?).
+  sentences <- unlist(strsplit(text, "[.!?]"))
+  
+  # only take are non-empty ones
+  sentences <- sentences[sentences != ""]  
+  
+  return(length(sentences))
+}
+sona_average = sona %>% select(speech)
+
+# Add column with number of sentences for each speech 
+sentence_length = apply(sona_average,1,average_sentence)
+sona_average = sona_average %>% 
+         mutate(sentence_length = sentence_length,president = sona$president_13)
+
+sona_average %>% group_by(president) %>% 
+                 summarise(avg = mean(sentence_length)) %>%
+                 ggplot(aes(x = reorder(president,avg),y = avg)) +
+                 geom_col(fill='wheat',width = 0.6) +
+                 xlab('Name of president') +
+                 theme(axis.text.x =element_text(size=10)) +
+                 ylab('Average number of sentences used') +
+                 geom_text(aes(label = round(avg)),vjust = 2,fontface = "bold")
+
+```
+
+This creates an imbalance in the data set as deKlerk will be under represented in the data set. This means when creating training and test set, the class represented will have less frequency compared to the other presidents. To work around this when fitting the models, we have decided to create different data sets where the row with deKlerk's speech is removed. We compare the performance to the data set when use the data set as it is.
 
 # Methodology
 
-## Data Pre processing
+## Bag of words model
 
-The data set is loaded in `R`
+```{r bagWords}
+# Original data ####
+sona = sona[-1,]
+sona$pres_num = factor(sona$pres_num)
+token_sentence  = unnest_tokens(sona,sentences,speech,token = "sentences")
+# Add an index for each sentence
+token_sentence    = token_sentence  %>% mutate(index = c(1:nrow(token_sentence)))
+token_2nd   = unnest_tokens(token_sentence,words,sentences,token = "words")
+# remove stop words
+token_stop = token_2nd %>% filter(!words %in% stop_words$word)
 
-## Exploratory Data Analysis
+# Balanced data (de Klerk removed) #### 
+new_sona_bal  = new_sona %>% select(speech,year,president_13,date,pres_num)
+new_sona$pres_num = factor(new_sona$pres_num)
+token_bal_sentence  = unnest_tokens(new_sona,sentences,speech,token = "sentences")
+# Add an index for each sentence
+token_bal_sentence  = token_bal_sentence  %>% mutate(index = c(1:nrow(token_bal_sentence)))
+token_2nd_bal = unnest_tokens(token_bal_sentence,words,sentences,token = "words")
+# remove stop words
+token_stop_bal  = token_2nd_bal %>% filter(!words %in% stop_words$word)
 
-In this study , the SONA data set will be used. This dataset contains all the speeches of the previous presidents from 1994 to 2023 which is in the form of text file. Pre processing of the data set is conducted so that we're able to transform the dataset into the required form. The steps taken to clean and transform the data are indicated below.
+# bag of words format ####
+word_bag <- token_stop %>% group_by(words) %>%
+  count() %>% 
+  ungroup() %>%
+  top_n(1000,wt = n) %>%
+  select(-n)
+
+speech_tdf <- token_stop %>%
+              inner_join(word_bag) %>%
+              group_by(index,words) %>%
+              count() %>%  
+              group_by(index) %>%
+              # how many times each word was used in those xxx sentences
+              mutate(total = sum(n)) %>%
+              ungroup()
+
+bagofwords  <- speech_tdf %>% 
+                select(index,words,n) %>% 
+                pivot_wider(names_from=words,values_from=n,values_fill = 0) %>% 
+                left_join(token_sentence %>% select(index,pres_num)) %>%
+                # make index and pres_num the first two columns
+                select(index,pres_num, everything())
+```
+
+The machine learning algorithms that will be applied in the paper accept a certain format of text data as they cannot operate on raw text. This means the data set must be represented in a numerical form prior being feed into a machine learning algorithm. @blogBagModel The bag-of-words model is used to for this , one can think of this as a method to convert words to a numerical representation.
+
+In this paper, we are interested to tokenizer the data into sentences rather than words. To achieve this, the data set is tokenized using tokens as sentences. An extra column is then added which shows the index of each sentence in the data. This is done in order to be able to track from which sentence do the words come from. The tibble is then further tokenized into words. The bag of words model created is based on the top 1000 most used words by the presidents.
+
+## tf-tdf model
+
+```{r tf_tdf}
+#  tf-dft format ####
+ndocs = length(unique(speech_tdf$index))
+
+speech_tdf2 <- token_2nd%>%
+  inner_join(word_bag) %>%
+  group_by(index,words) %>%
+  count() %>%  
+  group_by(index) %>%
+  # how many times each word was used in those xxx sentences
+  mutate(total = sum(n)) %>%
+  ungroup()
+
+speech_tdf2 = speech_tdf2 %>% bind_tf_idf(words,index,n)
+
+# reshape data
+tfidf = speech_tdf2 %>% select(index,words,tf_idf) %>%
+  pivot_wider(names_from = words,values_from =tf_idf,values_fill = 0) %>%
+  left_join(token_sentence %>% select(index,pres_num))
+
+```
+
+This model measures the importance of a word to a document in a collection of documents ( @textMiningBook ). This is measured by how frequently a words occurs in a document, which is termed *term frequency (tf)*. For the bag of words model, we need to consider whether to remove stop words or not. But this model uses the approach where it looks at a term's inverse document *frequency (idf),* this decreases the weight for commonly used words and increase the weights for those words that are not commonly used in the document. This implies for this model, we do not have remove stop words. Each term gets its own $\text{tfidf}$ score given by as
+
+$$
+tfidt(term) = tf(\text{term} \ t \ \text{in document}) \times idf(\text{term} \ t)
+$$ {#eq-tfidt}
+
+where
+
+$$
+idf(\text{term  t}) = \ln \left( \frac{n_{\text{docs}}}{n_{\text{docs containing term $t$}}} \right)
+$$ {#eq-idf} and $$
+tf(\text{term t in document})=\frac{\text{Number of times $t$ appears in document $i$}}{\text{Number of terms in document $i$}}
+$$ {#eq-tf}
+
+where $n_{\text{docs}}$ is the number of documents. The `bind_tf_idf()` function available on the `tidyverse` library to convert our data set to this format. @eq-idf and @eq-tf can be applied if one does the conversion form first principles , which is essentially what the function is performing.
+
+The data set is converted to this format by using the tokenized data where token is set to words. The models will be fitted in both bag of words format and TF-TDF format of the data sets and compare the results based on the performance on the test set.
+
+To fit the predictive models, different formats of the data sets will be used to assess the performance of each model under each format. The bag-of-words format and the TF-IDF format and also other format that will take into account the issue of imbalance of the data.
 
 ## Predictive models
 
-The models that will be fitted requires the data to be turned into a bag-of-words format. The question arises as to should we leave out stop words and also should we use the word counts or TF-IDF weighted counts of the words that appear in each sentence. This is explained in the following sections
+This section aims to briefly explain the theory behind each model that will be fitted and also some packages and parameters that are used in each model. The exact parameters are shown in @sec-results . This means, if we were to fit a tree based model that requires a certain number of trees as its parameters, th e exact value will be specified in @sec-results.
 
-### Bag of words model
+The data set is splited into a training set and a testing set. The training set will be used to train the models and the performance of each model will assessed on the testing set. A $70/30$ splitting rule is used in all the models, i.e. $70\%$ of the data will be used as the training set and $30\%$ as the testing set.
 
-The machine learning algorithms that will be applied in the paper accept a certain format of text data as they cannot operate on raw text. This means the data set must be represented in a numerical form prior being feed into a machine learning algorithm. @blogBagModel The bag-of-words model is used to for this , one can think of this as a method to convert words to numerical representation.
+### Neural networks {#sec-neural-network}
 
-In this study, we are interested to tokenizer the data into sentences rather than words. To achieve this, the data set is tokenized using token [^1] as sentences. And extra column, index is added which shows the index of the sentences in the data . The tibble is further tokenized into words. The bag of words model will be based on the top 1000 most used words by the presidents. AN
+In this section , we fit a multi-layer perceptron Neural network. It solves the shortcoming of the feedforward Neural Network of not being able to learn through back-propagation. It is mainly used for classification problems which is exactly what we have. Since we have 6 presidents, we are dealing with a multi-classification problem with 6 classes. The fitting of the Neural Network is implemented using `keras` package in `R`. The general framework for modelling using this keras is given below:
 
-[^1]: A unit used to split the data in the process of tokenization.
+-   Define the model. This entails specifying the layers in the models, the input layer and output layer will always be present as these refers predictor and target variables in the data set respectively. The input shape on the input layer has to correspond to the number of predictor variables in the training set. There is also an option to add drop out rate, a float between 0 and 1.This is a regularization technique that prevents the model from over-fitting.
 
-### tf-tdf model
+    Each layer must have its own activation function, this is determined by the type of data set, whether it's continuos or not. The most commonly used activation functions are SoftMax, ReLu and sigmoid.
 
-This model measures the importance of a word to a document in a collection of documents ( @textMiningBook ) This is measureed by how frequently a words occurs in a document, which is termed *term frequency (tf)*. For the bag of words model, we need to consider whether to remove stop words or not. But this model uses the approach where it looks at a term's inverse document *frequency (idf),* this decreases the weight for commonly used words and increase the weights for those words that are not commonly used in the document. This implies for this model, we do not have remove stop words. The inverse document frequency of any given term is defined as
+-   The next step is to compile the model by specifying the loss function , the optimizer used and the metrics used to assess the performance of the model. For a multi-classification problem, the categorical_entropy since we have multiple classes.
+
+-   The final step is fitting the model on the training set with a chosen number of epochs and the batch size. Predictions are then made on unseen data, the test set. The performance of the model is assessed based on the accuracy on the test set.
+
+### Tree based methods
+
+The other predictive models that are considered are decision trees, which will include classification trees and gradient boosted trees. Each of these have their own advantage and disadvantage which will be explored below. The main aim to fit these tree method is to compare them to our neural network results. One of the disadvantages of these methods is that the predictive accuracy of the trees is not as good as some other classification approaches.
+
+**Classification trees**
+
+Classification trees are applied to problems where the target variable is categorically which is relevant to our data set. At each step during the tree growth, a certain splitting criterion must be applied. The splitting criteria that exists in the literature are the Gini Index , Entropy and Deviance. In the paper, the Gini Index will be splitting criterion used for splitting the classification trees. The Gini Index measures the variability within the leaf nodes of a tree. At each step during tree growth, we choose a split that results in the greatest reduction of the Gini Index. The Gini Index is given by
 
 $$
-idf(\text{term}) = \ln \left( \frac{n_{\text{docs}}}{n_{\text{docs containing term}}} \right)
-$$ {#eq-idf}
+G =\sum_{j=1}^J G_j \quad \text{where} \quad  G_j = \sum_{k=1}^K \hat{p}_{jk}(1-\hat{p}_{jk}
+)$$ {#eq-gini_index}
 
-where $n_{\text{docs}}$ is the number of documents. The `bind_tf_idf()` function available on the `tidyverse` library to convert our data set to this format. @eq-idf can be applied if one does the conversion form first principles , which is essentially what the function is performing.
+$\hat{p}_{jk}$ is the proportion of observations in the target variable $k =1 ,..., K$ within leaf node $j=1,…,J$
 
-### Neural network
+This method will be implemented using the `rpart()` package in `R` with `method = class` since this is classification problem with 6 classes i.e. the number of presidents in the data set. The default splitting criteria used by this package is the Gini index.
 
-In this section , we fit a multi-layer perceptron Neural network. This network solves the shortcoming of the Feedforward Neural Network of not being able to learn through backpropagation. It is mainly used for classification problem which is exactly what we have. Since we have 6 presidents, this can be considered as a multiclassification problem with 6 classes. The fitting of the Neural Network is implemented using `keras` package in `R`. The parameters involved in fitting the model in `keras` are explained below:
+**Gradient Boosted Trees**
 
-`keras_model_sequential()` This part we specify the number of layers in our model and the activation function that each must have . The activation function used depends on the type of data set in question.
+The algorithm for Boosting is similar to that of Random Forest but the main different is that the trees are grown sequentially using the information from the previous trees. In RandomForests, each tree is built on a bootstrap sample independently of the other trees @HastieGareth2013 .The boosting algorithm does not involved boostrapp sampling , the algorithm has three main parameters:
 
-The most common used activation functions are `sigmoid`, `ReLU` and `softmax` .
+Tuning parameters for the `gbm` package:
 
-For the base model, we used 3 layers. For the input layer, the ReLU activation function will be used with 201 units. And for the hidden layers, we usehe the softmax activation will be used for output layer and ReLU activation for the input layers.
+-   $B$ is the number of trees to grow - cross validation is used to select $B$ since a large value of $B$ may lead to over-fitting.
 
-\
-`compile()`\
-This is the step one specify the loss function , optimizer and metrics. In our case, since this is a classification problem with 6 classes, the `categorical_crossentropy` is used. We use `accuracy` for metric and `adam` for the optimizer.
+-   Learning rate ($\lambda$) - typical values are 0.01 or 0.001, are generally used as choices for the learning rate. The same values will be implemented in this paper.
 
-To fit the model, we specify the response variable and input variable and the number of `epochs` .
+-   Number of splits in each tree $d$ - interaction depth of the model, the maximum number of splits the model has to perform on a tree. In most cases, $d=1$ works well which impiles a single is considered.
 
-# Results
+In the methods stated above, one can explore the importance of the predictor variables used. However, our interest is to compare the performance of these models to the Neural Network in @sec-neural-network section. Hence, the importance of the variable used will not be explored.
 
-# Discussion and conclusion
+# Results {#sec-results}
+
+## Neural network
+
+Four different models will be fitted. We start with a simple model, and then make modifications to the parameters as we move from one model to another to assess how the model perform which is determined by the accuracy of predictions of the test set. The models will be fitted on the original data set and also the data set where we have removed deKlerk's speech. Throughout the paper, this model is referred to as the balanced data.The models fitted are indicated below:
+
+-   **Model 1**
+
+    -   Number of hidden layers $= 1$ , activation function used RELu with 900 units.
+
+    -   Input layer : Activation function $=$ ReLu , Units $=$ number of rows in the training set, Inputshape $=$number of predictor variables.
+
+    -   Output layer : Activation function $=$ SoftMax , units $= 6$ as we have 6 distinct lasses in the data set. The reason for using SoftMax it because we want to get probabilities since this is a classification problem.
+
+-   **Model 2** This model has the same parameters as model 1 but a drop out regularization is introduce in the input layer and hidden layer to prevent over-fitting. The penalty applied is 0.05. The optimizer used for this model is **rmsprop**.
+
+-   **Model 3** This model has the same parameters as model 1, an extra hidden layer with 1020 units. The activation function used for the extra hidden layer is the sigmoid function.
+
+-   **Model 4** This model has the same parameters as model 3 but when fitting the model, the data will be scaled.
+
+In all the models where the activation function is not specified for the any of the layers, the input layer and the hidden layers uses the ReLU activation function and the output layer uses the SoftMax activation function was used. A batch size of 5 and 40 epochs was applied, there was no improvement in the accuracy of the model for large number of epochs hence a small value is used. (Refer to a figure in the appendix as evidence, this was for model 2)
+
+```{r original}
+# Word bag model
+word_bag <- token_stop %>% group_by(words) %>%
+  count() %>% 
+  ungroup() %>%
+  top_n(1000,wt = n) %>%
+  select(-n)
+
+speech_tdf <- token_stop %>%
+              inner_join(word_bag) %>%
+              group_by(index,words) %>%
+              count() %>%  
+              group_by(index) %>%
+              # how many times each word was used in those xxx sentences
+              mutate(total = sum(n)) %>%
+              ungroup()
+
+bagofwords_original  <- speech_tdf %>% 
+                  select(index,words,n) %>% 
+                  pivot_wider(names_from=words,values_from=n,values_fill = 0) %>% 
+                  left_join(token_sentence %>% select(index,pres_num)) %>%
+                  # make index and pres_num the first two columns
+                  select(index,pres_num, everything())
+
+ndocs = length(unique(speech_tdf$index))
+
+#  tf-dft format ####
+speech_tdf2 <- token_2nd %>%
+  inner_join(word_bag) %>%
+  group_by(index,words) %>%
+  count() %>%  
+  group_by(index) %>%
+  # how many times each word was used in those xxx sentences
+  mutate(total = sum(n)) %>%
+  ungroup()
+
+speech_tdf2 = speech_tdf2 %>% bind_tf_idf(words,index,n)
+
+# reshape data
+tfidf_original = speech_tdf2 %>% select(index,words,tf_idf) %>%
+  pivot_wider(names_from = words,values_from = tf_idf,values_fill = 0) %>%
+  left_join(token_sentence %>% select(index,pres_num))
+
+```
+
+```{r balanced_data}
+# Word bag model
+word_bag <- token_stop_bal %>% group_by(words) %>%
+  count() %>% 
+  ungroup() %>%
+  top_n(1000,wt = n) %>%
+  select(-n)
+
+speech_tdf <- token_stop_bal %>%
+              inner_join(word_bag) %>%
+              group_by(index,words) %>%
+              count() %>%  
+              group_by(index) %>%
+              # how many times each word was used in those xxx sentences
+              mutate(total = sum(n)) %>%
+              ungroup()
+
+bagofwords_balanced <- speech_tdf %>% 
+                  select(index,words,n) %>% 
+                  pivot_wider(names_from=words,values_from=n,values_fill = 0) %>% 
+                  left_join(token_bal_sentence %>% select(index,pres_num)) %>%
+                  # make index and pres_num the first two columns
+                  select(index,pres_num, everything())
+
+ndocs = length(unique(speech_tdf$index))
+
+#  tf-dft format ####
+speech_tdf2 <- token_2nd_bal %>%
+  inner_join(word_bag) %>%
+  group_by(index,words) %>%
+  count() %>%  
+  group_by(index) %>%
+  # how many times each word was used in those xxx sentences
+  mutate(total = sum(n)) %>%
+  ungroup()
+
+speech_tdf2 = speech_tdf2 %>% bind_tf_idf(words,index,n)
+
+# reshape data
+tfidf_balanced = speech_tdf2 %>% select(index,words,tf_idf) %>%
+  pivot_wider(names_from = words,values_from = tf_idf,values_fill = 0) %>%
+  left_join(token_bal_sentence %>% select(index,pres_num))
+
+```
+
+```{r fit , eval=FALSE}
+# split the data set
+load('NN.RData')
+```
+
+| Model       | Accuracy (original data) | Accuracy (balance data) |
+|-------------|--------------------------|-------------------------|
+| **model 1** | $0.5248$                 | 0.5325                  |
+| **model 2** | $0.5382$                 | 0.5481                  |
+| **model 3** | $0.5326$                 | 0.5488                  |
+| **model 4** | $0.5136$                 | 0.5092                  |
+
+: Results of the neural network models on the balanced bag of words data set {#tbl-NN}
+
+@tbl-NN shows the performance of the models on the out-of sample data. The model performs better on the data set where we have tried to balance the data by removing the speech of the president that had few sentence i.e. deKlerk's speech. However, there's no significant difference in the accuracy of all the models on both data set as they both produce an accuracy around $50\%$.
+
+Looking at the individual models in the balanced data, model 2 and model 3 had a higher accuracy compared to the rest of the models. This implies that changing the optimizer and adding an extra hidden layer slightly improved the performance of the models.
+
+## Classification trees
+
+```{r class_trees}
+#=========================================================
+# CLASSIFICATION TREE - bag of words
+#=========================================================
+
+# split the data set
+set.seed(240)
+train_ids = bagofwords  %>% group_by(pres_num) %>%
+                            slice_sample(prop = 0.7) %>%
+                            ungroup() %>% select(index)
+
+training = bagofwords  %>% right_join(train_ids,by ='index') %>% select(-index)
+testing  = bagofwords  %>% anti_join(train_ids,by ='index') %>% select(-index)
+
+# Fit the model
+fit = rpart(pres_num ~ ., training, method = 'class')
+
+# train accuracy
+fittedtrain <- predict(fit,type='class')
+predtrain   <-  table(training$pres_num,fittedtrain)
+# train_accuracy = round(sum(diag(predtrain))/sum(predtrain),3) 
+
+# test accuracy
+fittedtest = predict(fit , newdata = testing, type = 'class')
+predtest  = table(testing$pres_num,fittedtest)
+test_accuracy = round(sum(diag(predtest))/sum(predtest),3)
+
+#=========================================================
+# CLASSIFICATION TREE - it-dft  format 
+#=========================================================
+
+training_tf = tfidf %>% right_join(train_ids,by ='index') %>% select(-index)
+test_tf     = tfidf %>% anti_join(train_ids,by ='index') %>% select(-index)
+
+fit_tf = rpart(pres_num ~.,training_tf)
+
+tf_train <- predict(fit_tf,type='class')
+tf_pred_train   <-  table(training_tf$pres_num,tf_train)
+
+tf_test = predict(fit_tf , newdata = test_tf, type = 'class')
+tf_pred_test  = table(test_tf$pres_num,tf_test)
+
+# test accuracy
+tf_test_accuracy  = round(sum(diag(tf_pred_test))/sum(tf_pred_test),3)
+
+
+                                              # BAG    # ITF
+# Balanced data (stop words removed)          0.281    0.281
+# Balanced data (stop words not removed)      0.375    0.361
+
+# Unbalanced data ( stop words removed)       0.338    0.338    
+# Unbalanced data ( stop words not removed)   0.385    0.373
+```
+
+To fit the classification trees, we use the rpart package in R. This model will the fitted on bag of words format and also the TF-IDF format. In both cases, we will consider when using the original data and also when using the balanced data. The results of for these models are indicated in @tbl-class_results .
+
+| Data set            | Data type used | Accuracy |
+|---------------------|----------------|----------|
+| Bag-of-words format | Original       | 0.295    |
+| TF-IDF format       | Original       | 0.295    |
+| Bag-of-words format | Balanced       | 0.281    |
+| TF-IDF format       | Balanced       | 0.281    |
+
+: Results of the classification tree model for different data formats {#tbl-class_results}
+
+The models on the original data had better accuracy of $29.5\%$ compared to the balanced data set. We also note that , the models attain the same accuracy irrespective of the format of the data that is used. This is cases for both the balanced and the original data. This implies that balancing the data did not make any significant improvement on the accuracy of the models. Similarly, whether we used the bag of words format or the TF-IDF format, we obtain the same accuracy of $0.295$ and $0.281$ respectively.
+
+## Gradient Boosted trees
+
+```{r}
+
+```
+
+| Data format | Data type used | Accuracy |
+|-------------|----------------|----------|
+|             |                |          |
+|             |                |          |
+|             |                |          |
+
+: Results of the Gradient Boosted Tree model for different data formats {#tbl-gbm_results}
+
+#  Conclusion
+
+Comparing the overall results in the models fitted, the neural networks model performed better than the tree based based methods. We note that the performance of the neural networks on the different data sets varies as the parameters of the models are modified. This implies that it is still possible to get better results than the ones obtained in this paper as one tries to employ different modification to the parameters of the models. And the choice on the parameters to fix. The analysis was based on the top 1000 most common used words in the speeches, using more words could possibly yield different results although this is not guaranteed. We did not explore different numbers of words, this part was fixed.
+
+With respect to the imbalance of the data set, only one option was considered to deal with data imbalance. This was assessing the average number of sentences of the speeches by each president. Then we decided to remove the president's speech that was under represented. Our analysis was mainly based on using the two different data sets- the original data set and the balanced data set. Other techniques that could be considered included re-sampling techniques where the data is modified to balance the classes by oversampling and under-sampling. The second is SMOTE (Synthetic Minority Oversampling Technique) which creates synthetic examples for the under represented class in the unbalanced data.
+
+# Additional plots {.appendix}
+
+![Accuracy of model 2 for 100 epochs](large-epoch.pdf){fig-align="center"}
 
 # List of packages used in `R` {.appendix}
 
 In this section , we includes the main packages that we used in `R` and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in @tbl-packages . \[Remove this\]
 
-| Package name         | Usage                                                                                 |
-|----------------|------------------------------------------------|
-| `tidyverse`          | Data cleaning and pre-processing                                                      |
-| `tidytext` `stingr`  | Manipulation of text data                                                             |
-| `keras`              | Fit a feed-forward neural network                                                     |
-| `gridExtra`          | Organize multiple plots produced by the `ggplot` package to be one figure during EDA. |
-| `rpart`              | Fitting a classification tree for bag of words and TF-IDF models.                     |
+| Package name        | Usage                                                                                         |
+|-------------------|-----------------------------------------------------|
+| `tidyverse`         | Data cleaning and pre-processing                                                              |
+| `tidytext` `stingr` | Manipulation of text data                                                                     |
+| `keras`             | Fit a feed-forward neural network                                                             |
+| `gridExtra`         | Organize multiple plots produced by the `ggplot` package to be one figure during EDA.         |
+| `rpart` `gbm`       | Fitting tree based methods, classification tree , random forest and gradient boosted machines |
 
 : List of packages used in the study {#tbl-packages}
 
 # Data accessibility {.appendix}
 
-The originial dataset used for this study can be found in [link](https://www.gov.za/state-nation-address) . We have also read the individual text files of the speeches for reading the data on `R` from Ian's github page. All the analysis and fitting of models in this study will conducted using the free Statistical Computing software `R`. @R
+The original data set used for this study can be found in [link](https://www.gov.za/state-nation-address) . We have also read the individual text files of the speeches for reading the data on `R` from Ian's github page. All the analysis and fitting of models in this study will conducted using the free Statistical Computing software `R`. @R
 
 # References {.appendix}
