@@ -8,7 +8,7 @@ format:
   html: 
     code-fold: false
     html-math-method: katex
-fig-width: 8
+fig-width: 5
 fig-height: 5
 fig-align: "center"
 fig-asp: 0.7
@@ -34,7 +34,7 @@ library(tidytext)
 
 # Abstract
 
-This paper explores the application of different predictive models to text data, the predictive models applied are neural networks and tree based methods. We construct and compare three predictive models using different forms of the data set as our input. The aim is to build a model that take a sentence of text as input and return a prediction of which president was the source of that sentence. The data set used is the State of the Nation Address of the President of South African ( SONA) speeches, which contains all the speeches from 1994 to 2023. Our findings through different explorations of the mentioned predictive models, with different parameters, the neural network models performed better the decision tree methods. However, the neural network returned an accuracy in the margins $50\% - 55\%$ on unseen data, which is quite low. Imbalance
+This paper explores the application of different predictive models to text data, the predictive models applied are neural networks and tree based methods. We construct and compare three predictive models using different forms of the data set as our input. The aim is to build a model that take a sentence of text as input and return a prediction of which president was the source of that sentence. The data set used is the State of the Nation Address of the President of South African (SONA) speeches, which contains all the speeches from 1994 to 2023. Our findings through different explorations of the mentioned predictive models, with different parameters, the neural network models performed better the decision tree methods. However, the neural network returned an accuracy in the margins $50\% - 55\%$ on unseen data, which is quite low.
 
 # Introduction
 
@@ -759,7 +759,7 @@ The models on the original data had better accuracy of $29.5\%$ compared to the 
 
 : Results of the Gradient Boosted Tree model for different data formats {#tbl-gbm_results}
 
-#  Conclusion
+# Conclusion
 
 Comparing the overall results in the models fitted, the neural networks model performed better than the tree based based methods. We note that the performance of the neural networks on the different data sets varies as the parameters of the models are modified. This implies that it is still possible to get better results than the ones obtained in this paper as one tries to employ different modification to the parameters of the models. And the choice on the parameters to fix. The analysis was based on the top 1000 most common used words in the speeches, using more words could possibly yield different results although this is not guaranteed. We did not explore different numbers of words, this part was fixed.
 
@@ -774,7 +774,7 @@ With respect to the imbalance of the data set, only one option was considered to
 In this section , we includes the main packages that we used in `R` and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in @tbl-packages . \[Remove this\]
 
 | Package name        | Usage                                                                                         |
-|-------------------|-----------------------------------------------------|
+|--------------------|----------------------------------------------------|
 | `tidyverse`         | Data cleaning and pre-processing                                                              |
 | `tidytext` `stingr` | Manipulation of text data                                                                     |
 | `keras`             | Fit a feed-forward neural network                                                             |
