@@ -64,133 +64,133 @@ Before we begin with the data cleaning, we load the data by the file names. The 
 
 ```{r load_data}
   # read in text data files and organize these into a data frame
-  filenames <- c('1994_post_elections_Mandela.txt', '1994_pre_elections_deKlerk.txt', 
-                 '1995_Mandela.txt', '1996_Mandela.txt', '1997_Mandela.txt', 
-                 '1998_Mandela.txt', '1999_post_elections_Mandela.txt', 
-                 '1999_pre_elections_Mandela.txt', '2000_Mbeki.txt', '2001_Mbeki.txt',
-                 '2002_Mbeki.txt', '2003_Mbeki.txt', '2004_post_elections_Mbeki.txt',
-                 '2004_pre_elections_Mbeki.txt','2005_Mbeki.txt', '2006_Mbeki.txt',
-                 '2007_Mbeki.txt', '2008_Mbeki.txt', '2009_post_elections_Zuma.txt', 
-                 '2009_pre_elections_ Motlanthe.txt','2010_Zuma.txt', '2011_Zuma.txt',
-                 '2012_Zuma.txt', '2013_Zuma.txt', '2014_post_elections_Zuma.txt', 
-                 '2014_pre_elections_Zuma.txt', '2015_Zuma.txt', '2016_Zuma.txt', 
-                 '2017_Zuma.txt', '2018_Ramaphosa.txt', '2019_post_elections_Ramaphosa.txt',
-                 '2019_pre_elections_Ramaphosa.txt','2020_Ramaphosa.txt', '2021_Ramaphosa.txt',
-                 '2022_Ramaphosa.txt', '2023_Ramaphosa.txt')
-  
-  
-  this_speech    <- c()
-  this_speech[1] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_post_elections_Mandela.txt', nchars = 27050)
-  this_speech[2] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_pre_elections_deKlerk.txt', nchars = 12786)
-  this_speech[3] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1995_Mandela.txt', nchars = 39019)
-  this_speech[4] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1996_Mandela.txt', nchars = 39524)
-  this_speech[5] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1997_Mandela.txt', nchars = 37489)
-  this_speech[6] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1998_Mandela.txt', nchars = 45247)
-  this_speech[7] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_post_elections_Mandela.txt', nchars = 34674)
-  this_speech[8] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_pre_elections_Mandela.txt', nchars = 41225)
-  this_speech[9] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2000_Mbeki.txt', nchars = 37552)
-  this_speech[10] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2001_Mbeki.txt', nchars = 41719)
-  this_speech[11] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2002_Mbeki.txt', nchars = 50544)
-  this_speech[12] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2003_Mbeki.txt', nchars = 58284)
-  this_speech[13] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_post_elections_Mbeki.txt', nchars = 34590)
-  this_speech[14] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_pre_elections_Mbeki.txt', nchars = 39232)
-  this_speech[15] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2005_Mbeki.txt', nchars = 54635)
-  this_speech[16] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2006_Mbeki.txt', nchars = 48643)
-  this_speech[17] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2007_Mbeki.txt', nchars = 48641)
-  this_speech[18] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2008_Mbeki.txt', nchars = 44907)
-  this_speech[19] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_post_elections_Zuma.txt', nchars = 31101)
-  this_speech[20] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_pre_elections_Motlanthe.txt', nchars = 47157)
-  this_speech[21] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2010_Zuma.txt', nchars = 26384)
-  this_speech[22] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2011_Zuma.txt', nchars = 33281)
-  this_speech[23] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2012_Zuma.txt', nchars = 33376)
-  this_speech[24] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2013_Zuma.txt', nchars = 36006)
-  this_speech[25] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_post_elections_Zuma.txt', nchars = 29403)
-  this_speech[26] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_pre_elections_Zuma.txt', nchars = 36233)
-  this_speech[27] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2015_Zuma.txt', nchars = 32860)
-  this_speech[28] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2016_Zuma.txt', nchars = 32464)
-  this_speech[29] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2017_Zuma.txt', nchars = 35981)
-  this_speech[30] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2018_Ramaphosa.txt', nchars = 33290)
-  this_speech[31] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_post_elections_Ramaphosa.txt', nchars = 42112)
-  this_speech[32] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_pre_elections_Ramaphosa.txt', nchars = 56960)
-  this_speech[33] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2020_Ramaphosa.txt', nchars = 47910)
-  this_speech[34] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2021_Ramaphosa.txt', nchars = 43352)
-  this_speech[35] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
-  this_speech[36] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
-  
-  sona <- data.frame(filename = filenames, speech = this_speech, stringsAsFactors = FALSE)
-  
-  # extract year and president for each speech
-  sona$year <- str_sub(sona$filename, start = 1, end = 4)
-  sona$president_13 <- str_remove_all(str_extract(sona$filename, "[dA-Z].*\\."), "\\.")
-  
-  # clean the sona dataset by adding the date and removing unnecessary text
-  replace_reg <- '(http.*?(\\s|.$))|(www.*?(\\s|.$))|&amp;|&lt;|&gt;|\n'
-  
-  sona <- sona %>%
-    mutate(speech = str_replace_all(speech, replace_reg , ' ')
-           ,date = str_sub(speech, start = 1, end = 30)
-           ,date = str_replace_all(date, "February", "02")
-           ,date = str_replace_all(date, "June", "06")
-           ,date = str_replace_all(date, "Feb", "02")
-           ,date = str_replace_all(date, "May", "05")
-           ,date = str_replace_all(date, "Jun", "06")
-           ,date = str_replace_all(date, "Thursday, ","")
-           ,date = str_replace_all(date, ' ', '-')        
-           ,date = str_replace_all(date, "[A-z]",'')
-           ,date = str_replace_all(date, '-----', '')
-           ,date = str_replace_all(date, '----', '')
-           ,date = str_replace_all(date, '---', '')
-           ,date = str_replace_all(date, '--', '')
-           )
-# write the data fram as a tibble
-sona = as_tibble(sona)
-
-# Remove the dates at the beginning of the speeches
-dates_to_replace = c('24 May 1994 ','28 February 1994 ','17 February 1995 ','9 February 1996 ',
-                     '7 February 1997 ','6 February 1998 ','25 June 1999 ','5 February 1999 ',
-                     '4 February 2000 ','9 February 2001 ','8 February 2002 ','14 February 2003 ',
-                     '21 May 2004 ','6 February 2004 ','11 February 2005 ','3 February 2006 ',
-                     '9 February 2007 ','8 February 2008 ','03 June 2009 ' ,'6 February 2009 ' ,
-                     '11 February 2010 ','10 February 2011 ','09 February 2012 ','14 February 2013 ' ,
-                     '17 June 2014 ','13 February 2014 ','12 February 2015 ','11 February 2016 ',
-                     '9 February 2017 ','16 February 2018 ','20 Jun 2019 ','7 Feb 2019 ','13 February 2020 ',
-                     '11 February 2021 ','Thursday, 10 February 2022 ','Thursday, 10 February 2022 '
-)
-for (i in 1:nrow(sona)) {
-  sona$speech[i] = gsub(dates_to_replace[i],"", sona$speech[i],ignore.case = TRUE)
-}
-  
-# sona balanced (deKlerk removed)
-new_sona = sona[-2,]
-pres_bal = unique(new_sona$president_13)
-pres_num2  = c()
-for (i in 1:nrow(new_sona)) {
-  pres_num2[i] = ifelse(new_sona$president_13[i] == pres_bal[1],1,
-                              ifelse(new_sona$president_13[i] == pres_bal[2],2,
-                                     ifelse(new_sona$president_13[i] == pres_bal[3],3,
-                                            ifelse(new_sona$president_13[i] == pres_bal[4],4,5))))
-}
-# Add the numeric column for president
-new_sona = mutate(new_sona,pres_num = pres_num2)
-
-# Numeric values for the presidents
-# deKlerk   = 2  Mandela   = 1
-# Mbeki     = 3  Motlanthe = 5
-# Ramaphosa = 6  Zuma      = 4
-
-pres = unique(sona$president_13)
-pres_num  = c()
-for (i in 1:nrow(sona)) {
-  pres_num[i] = ifelse(sona$president_13[i] == pres[1],1,
-                       ifelse(sona$president_13[i] == pres[2],2,
-                              ifelse(sona$president_13[i] == pres[3],3,
-                                     ifelse(sona$president_13[i] == pres[4],4,
-                                            ifelse(sona$president_13[i] == pres[5],5,6)))))
-}
-# Add the numeric column for president
-sona = mutate(sona,pres_num = pres_num)
+#   filenames <- c('1994_post_elections_Mandela.txt', '1994_pre_elections_deKlerk.txt', 
+#                  '1995_Mandela.txt', '1996_Mandela.txt', '1997_Mandela.txt', 
+#                  '1998_Mandela.txt', '1999_post_elections_Mandela.txt', 
+#                  '1999_pre_elections_Mandela.txt', '2000_Mbeki.txt', '2001_Mbeki.txt',
+#                  '2002_Mbeki.txt', '2003_Mbeki.txt', '2004_post_elections_Mbeki.txt',
+#                  '2004_pre_elections_Mbeki.txt','2005_Mbeki.txt', '2006_Mbeki.txt',
+#                  '2007_Mbeki.txt', '2008_Mbeki.txt', '2009_post_elections_Zuma.txt', 
+#                  '2009_pre_elections_ Motlanthe.txt','2010_Zuma.txt', '2011_Zuma.txt',
+#                  '2012_Zuma.txt', '2013_Zuma.txt', '2014_post_elections_Zuma.txt', 
+#                  '2014_pre_elections_Zuma.txt', '2015_Zuma.txt', '2016_Zuma.txt', 
+#                  '2017_Zuma.txt', '2018_Ramaphosa.txt', '2019_post_elections_Ramaphosa.txt',
+#                  '2019_pre_elections_Ramaphosa.txt','2020_Ramaphosa.txt', '2021_Ramaphosa.txt',
+#                  '2022_Ramaphosa.txt', '2023_Ramaphosa.txt')
+#   
+#   
+#   this_speech    <- c()
+#   this_speech[1] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_post_elections_Mandela.txt', nchars = 27050)
+#   this_speech[2] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_pre_elections_deKlerk.txt', nchars = 12786)
+#   this_speech[3] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1995_Mandela.txt', nchars = 39019)
+#   this_speech[4] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1996_Mandela.txt', nchars = 39524)
+#   this_speech[5] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1997_Mandela.txt', nchars = 37489)
+#   this_speech[6] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1998_Mandela.txt', nchars = 45247)
+#   this_speech[7] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_post_elections_Mandela.txt', nchars = 34674)
+#   this_speech[8] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_pre_elections_Mandela.txt', nchars = 41225)
+#   this_speech[9] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2000_Mbeki.txt', nchars = 37552)
+#   this_speech[10] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2001_Mbeki.txt', nchars = 41719)
+#   this_speech[11] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2002_Mbeki.txt', nchars = 50544)
+#   this_speech[12] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2003_Mbeki.txt', nchars = 58284)
+#   this_speech[13] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_post_elections_Mbeki.txt', nchars = 34590)
+#   this_speech[14] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_pre_elections_Mbeki.txt', nchars = 39232)
+#   this_speech[15] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2005_Mbeki.txt', nchars = 54635)
+#   this_speech[16] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2006_Mbeki.txt', nchars = 48643)
+#   this_speech[17] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2007_Mbeki.txt', nchars = 48641)
+#   this_speech[18] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2008_Mbeki.txt', nchars = 44907)
+#   this_speech[19] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_post_elections_Zuma.txt', nchars = 31101)
+#   this_speech[20] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_pre_elections_Motlanthe.txt', nchars = 47157)
+#   this_speech[21] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2010_Zuma.txt', nchars = 26384)
+#   this_speech[22] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2011_Zuma.txt', nchars = 33281)
+#   this_speech[23] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2012_Zuma.txt', nchars = 33376)
+#   this_speech[24] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2013_Zuma.txt', nchars = 36006)
+#   this_speech[25] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_post_elections_Zuma.txt', nchars = 29403)
+#   this_speech[26] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_pre_elections_Zuma.txt', nchars = 36233)
+#   this_speech[27] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2015_Zuma.txt', nchars = 32860)
+#   this_speech[28] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2016_Zuma.txt', nchars = 32464)
+#   this_speech[29] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2017_Zuma.txt', nchars = 35981)
+#   this_speech[30] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2018_Ramaphosa.txt', nchars = 33290)
+#   this_speech[31] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_post_elections_Ramaphosa.txt', nchars = 42112)
+#   this_speech[32] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_pre_elections_Ramaphosa.txt', nchars = 56960)
+#   this_speech[33] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2020_Ramaphosa.txt', nchars = 47910)
+#   this_speech[34] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2021_Ramaphosa.txt', nchars = 43352)
+#   this_speech[35] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
+#   this_speech[36] <- readChar('https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt', nchars = 52972)
+#   
+#   sona <- data.frame(filename = filenames, speech = this_speech, stringsAsFactors = FALSE)
+#   
+#   # extract year and president for each speech
+#   sona$year <- str_sub(sona$filename, start = 1, end = 4)
+#   sona$president_13 <- str_remove_all(str_extract(sona$filename, "[dA-Z].*\\."), "\\.")
+#   
+#   # clean the sona dataset by adding the date and removing unnecessary text
+#   replace_reg <- '(http.*?(\\s|.$))|(www.*?(\\s|.$))|&amp;|&lt;|&gt;|\n'
+#   
+#   sona <- sona %>%
+#     mutate(speech = str_replace_all(speech, replace_reg , ' ')
+#            ,date = str_sub(speech, start = 1, end = 30)
+#            ,date = str_replace_all(date, "February", "02")
+#            ,date = str_replace_all(date, "June", "06")
+#            ,date = str_replace_all(date, "Feb", "02")
+#            ,date = str_replace_all(date, "May", "05")
+#            ,date = str_replace_all(date, "Jun", "06")
+#            ,date = str_replace_all(date, "Thursday, ","")
+#            ,date = str_replace_all(date, ' ', '-')        
+#            ,date = str_replace_all(date, "[A-z]",'')
+#            ,date = str_replace_all(date, '-----', '')
+#            ,date = str_replace_all(date, '----', '')
+#            ,date = str_replace_all(date, '---', '')
+#            ,date = str_replace_all(date, '--', '')
+#            )
+# # write the data fram as a tibble
+# sona = as_tibble(sona)
+# 
+# # Remove the dates at the beginning of the speeches
+# dates_to_replace = c('24 May 1994 ','28 February 1994 ','17 February 1995 ','9 February 1996 ',
+#                      '7 February 1997 ','6 February 1998 ','25 June 1999 ','5 February 1999 ',
+#                      '4 February 2000 ','9 February 2001 ','8 February 2002 ','14 February 2003 ',
+#                      '21 May 2004 ','6 February 2004 ','11 February 2005 ','3 February 2006 ',
+#                      '9 February 2007 ','8 February 2008 ','03 June 2009 ' ,'6 February 2009 ' ,
+#                      '11 February 2010 ','10 February 2011 ','09 February 2012 ','14 February 2013 ' ,
+#                      '17 June 2014 ','13 February 2014 ','12 February 2015 ','11 February 2016 ',
+#                      '9 February 2017 ','16 February 2018 ','20 Jun 2019 ','7 Feb 2019 ','13 February 2020 ',
+#                      '11 February 2021 ','Thursday, 10 February 2022 ','Thursday, 10 February 2022 '
+# )
+# for (i in 1:nrow(sona)) {
+#   sona$speech[i] = gsub(dates_to_replace[i],"", sona$speech[i],ignore.case = TRUE)
+# }
+#   
+# # sona balanced (deKlerk removed)
+# new_sona = sona[-2,]
+# pres_bal = unique(new_sona$president_13)
+# pres_num2  = c()
+# for (i in 1:nrow(new_sona)) {
+#   pres_num2[i] = ifelse(new_sona$president_13[i] == pres_bal[1],1,
+#                               ifelse(new_sona$president_13[i] == pres_bal[2],2,
+#                                      ifelse(new_sona$president_13[i] == pres_bal[3],3,
+#                                             ifelse(new_sona$president_13[i] == pres_bal[4],4,5))))
+# }
+# # Add the numeric column for president
+# new_sona = mutate(new_sona,pres_num = pres_num2)
+# 
+# # Numeric values for the presidents
+# # deKlerk   = 2  Mandela   = 1
+# # Mbeki     = 3  Motlanthe = 5
+# # Ramaphosa = 6  Zuma      = 4
+# 
+# pres = unique(sona$president_13)
+# pres_num  = c()
+# for (i in 1:nrow(sona)) {
+#   pres_num[i] = ifelse(sona$president_13[i] == pres[1],1,
+#                        ifelse(sona$president_13[i] == pres[2],2,
+#                               ifelse(sona$president_13[i] == pres[3],3,
+#                                      ifelse(sona$president_13[i] == pres[4],4,
+#                                             ifelse(sona$president_13[i] == pres[5],5,6)))))
+# }
+# # Add the numeric column for president
+# sona = mutate(sona,pres_num = pres_num)
 #save.image(file="data.RData")
-# load('data.RData')
+load('data.RData')
 ```
 
 ## Data Analysis
@@ -510,7 +510,7 @@ In this section , we fit a multi-layer perceptron Neural network. It solves the 
 
 -   Define the model. This entails specifying the layers in the models, the input layer and output layer will always be present as these refers predictor and target variables in the data set respectively. The input shape on the input layer has to correspond to the number of predictor variables in the training set. There is also an option to add drop out rate, a float between 0 and 1.This is a regularization technique that prevents the model from over-fitting.
 
-    Each layer must have its own activation function, this is determined by the type of data set, whether it's continuos or not. The most commonly used activation functions are SoftMax, ReLu and sigmoid.
+    Each layer must have its own activation function, this is determined by the type of data set, whether it's continous or not. The most commonly used activation functions are SoftMax, ReLu and sigmoid.
 
 -   The next step is to compile the model by specifying the loss function , the optimizer used and the metrics used to assess the performance of the model. For a multi-classification problem, the categorical_entropy since we have multiple classes.
 
@@ -678,7 +678,7 @@ Looking at the individual models in the balanced data, model 2 and model 3 had a
 
 ## Classification trees
 
-```{r class_trees}
+```{r class_trees, eval = FALSE}
 #=========================================================
 # CLASSIFICATION TREE - bag of words
 #=========================================================
@@ -764,10 +764,6 @@ The models on the original data had better accuracy of $29.5\%$ compared to the 
 Comparing the overall results in the models fitted, the neural networks model performed better than the tree based based methods. We note that the performance of the neural networks on the different data sets varies as the parameters of the models are modified. This implies that it is still possible to get better results than the ones obtained in this paper as one tries to employ different modification to the parameters of the models. And the choice on the parameters to fix. The analysis was based on the top 1000 most common used words in the speeches, using more words could possibly yield different results although this is not guaranteed. We did not explore different numbers of words, this part was fixed.
 
 With respect to the imbalance of the data set, only one option was considered to deal with data imbalance. This was assessing the average number of sentences of the speeches by each president. Then we decided to remove the president's speech that was under represented. Our analysis was mainly based on using the two different data sets- the original data set and the balanced data set. Other techniques that could be considered included re-sampling techniques where the data is modified to balance the classes by oversampling and under-sampling. The second is SMOTE (Synthetic Minority Oversampling Technique) which creates synthetic examples for the under represented class in the unbalanced data.
-
-# Additional plots {.appendix}
-
-![Accuracy of model 2 for 100 epochs](large-epoch.pdf){fig-align="center"}
 
 # List of packages used in `R` {.appendix}
 
