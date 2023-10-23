@@ -770,7 +770,7 @@ With respect to the imbalance of the data set, only one option was considered to
 In this section , we includes the main packages that we used in `R` and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in @tbl-packages . \[Remove this\]
 
 | Package name        | Usage                                                                                         |
-|--------------------|----------------------------------------------------|
+|---------------------|-----------------------------------------------------------------------------------------------|
 | `tidyverse`         | Data cleaning and pre-processing                                                              |
 | `tidytext` `stingr` | Manipulation of text data                                                                     |
 | `keras`             | Fit a feed-forward neural network                                                             |
