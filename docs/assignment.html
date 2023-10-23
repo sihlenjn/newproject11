@@ -163,7 +163,6 @@ div.csl-indent {
   <li><a href="#gradient-boosted-trees" id="toc-gradient-boosted-trees" class="nav-link" data-scroll-target="#gradient-boosted-trees">Gradient Boosted trees</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
-  <li><a href="#additional-plots" id="toc-additional-plots" class="nav-link" data-scroll-target="#additional-plots">Additional plots</a></li>
   <li><a href="#list-of-packages-used-in-r" id="toc-list-of-packages-used-in-r" class="nav-link" data-scroll-target="#list-of-packages-used-in-r">List of packages used in <code>R</code></a></li>
   <li><a href="#data-accessibility" id="toc-data-accessibility" class="nav-link" data-scroll-target="#data-accessibility">Data accessibility</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -244,7 +243,7 @@ div.csl-indent {
 <div class="cell-output-display">
 <div id="fig-top10Words" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="assignment_files/figure-html/fig-top10Words-1.png" class="img-fluid figure-img" width="1500"></p>
+<p><img src="assignment_files/figure-html/fig-top10Words-1.png" class="img-fluid figure-img" width="1800"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: Top 10 mostly common used words by all presidents.</figcaption><p></p>
 </figure>
 </div>
@@ -253,7 +252,7 @@ div.csl-indent {
 <p><a href="#fig-top10Words">Figure&nbsp;1</a> depicts the top 10 most used words by the 6 presidents. In <a href="#fig-top10Words">Figure&nbsp;1</a> , we see that the words government , south , people and national are the most used words by the presidents. These words are indication of what the speeches are all about.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="assignment_files/figure-html/TopWordsIndiv-1.png" class="img-fluid" width="1500"></p>
+<p><img src="assignment_files/figure-html/TopWordsIndiv-1.png" class="img-fluid" width="1800"></p>
 </div>
 </div>
 <div class="cell">
@@ -264,7 +263,7 @@ div.csl-indent {
 <div class="cell-output-display">
 <div id="fig-ramaphosa_speeches" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="assignment_files/figure-html/fig-ramaphosa_speeches-1.png" class="img-fluid figure-img" width="1500"></p>
+<p><img src="assignment_files/figure-html/fig-ramaphosa_speeches-1.png" class="img-fluid figure-img" width="1800"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;2: Comparison of the most used words by Ramaphosa for 2020 and 2021 speeches.</figcaption><p></p>
 </figure>
 </div>
@@ -275,7 +274,7 @@ div.csl-indent {
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assignment_files/figure-html/ramabigrams-1.png" class="img-fluid figure-img" width="1500"></p>
+<p><img src="assignment_files/figure-html/ramabigrams-1.png" class="img-fluid figure-img" width="1800"></p>
 <p></p><figcaption class="figure-caption">Comparison of the most used bigrams by Ramaphosa for 2020 and 2021 speeches.</figcaption><p></p>
 </figure>
 </div>
@@ -289,7 +288,7 @@ div.csl-indent {
 <div class="cell-output-display">
 <div id="fig-average_sentences" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="assignment_files/figure-html/fig-average_sentences-1.png" class="img-fluid figure-img" width="1500"></p>
+<p><img src="assignment_files/figure-html/fig-average_sentences-1.png" class="img-fluid figure-img" width="1800"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: Average number of sentences used by the presidents in their speeches.</figcaption><p></p>
 </figure>
 </div>
@@ -336,7 +335,7 @@ tf(\text{term t in document})=\frac{\text{Number of times $t$ appears in documen
 <p>In this section , we fit a multi-layer perceptron Neural network. It solves the shortcoming of the feedforward Neural Network of not being able to learn through back-propagation. It is mainly used for classification problems which is exactly what we have. Since we have 6 presidents, we are dealing with a multi-classification problem with 6 classes. The fitting of the Neural Network is implemented using <code>keras</code> package in <code>R</code>. The general framework for modelling using this keras is given below:</p>
 <ul>
 <li><p>Define the model. This entails specifying the layers in the models, the input layer and output layer will always be present as these refers predictor and target variables in the data set respectively. The input shape on the input layer has to correspond to the number of predictor variables in the training set. There is also an option to add drop out rate, a float between 0 and 1.This is a regularization technique that prevents the model from over-fitting.</p>
-<p>Each layer must have its own activation function, this is determined by the type of data set, whether it’s continuos or not. The most commonly used activation functions are SoftMax, ReLu and sigmoid.</p></li>
+<p>Each layer must have its own activation function, this is determined by the type of data set, whether it’s continous or not. The most commonly used activation functions are SoftMax, ReLu and sigmoid.</p></li>
 <li><p>The next step is to compile the model by specifying the loss function , the optimizer used and the metrics used to assess the performance of the model. For a multi-classification problem, the categorical_entropy since we have multiple classes.</p></li>
 <li><p>The final step is fitting the model on the training set with a chosen number of epochs and the batch size. Predictions are then made on unseen data, the test set. The performance of the model is assessed based on the accuracy on the test set.</p></li>
 </ul>
@@ -513,16 +512,7 @@ G =\sum_{j=1}^J G_j \quad \text{where} \quad  G_j = \sum_{k=1}^K \hat{p}_{jk}(1-
 
 
 
-
-<div id="quarto-appendix" class="default"><section id="additional-plots" class="level1 appendix"><h2 class="quarto-appendix-heading">Additional plots</h2><div class="quarto-appendix-contents">
-
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><embed src="large-epoch.pdf" class="img-fluid"></p>
-<p></p><figcaption class="figure-caption">Accuracy of model 2 for 100 epochs</figcaption><p></p>
-</figure>
-</div>
-</div></section><section id="list-of-packages-used-in-r" class="level1 appendix"><h2 class="quarto-appendix-heading">List of packages used in <code>R</code></h2><div class="quarto-appendix-contents">
+<div id="quarto-appendix" class="default"><section id="list-of-packages-used-in-r" class="level1 appendix"><h2 class="quarto-appendix-heading">List of packages used in <code>R</code></h2><div class="quarto-appendix-contents">
 
 <p>In this section , we includes the main packages that we used in <code>R</code> and the corresponding sections in which the packages were used. The packages have also been cited under references. We only include the package names, not the individual functions that available under each package. These are shown in <a href="#tbl-packages">Table&nbsp;4</a> . [Remove this]</p>
 <div id="tbl-packages" class="anchored">
